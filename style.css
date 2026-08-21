@@ -355,6 +355,21 @@ ul {
     outline: none;
     border-color: #2563eb;
 }
+.view-btn {
+    border: none;
+    padding: 7px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 5px;
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.view-btn:hover {
+    background: #e2e8f0;
+}
 .edit-btn,
 .delete-btn {
     border: none;
@@ -379,4 +394,124 @@ ul {
 .edit-btn:hover,
 .delete-btn:hover {
     opacity: 0.8;
+}
+.student-filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.student-filters input,
+.student-filters select {
+    padding: 11px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    font: inherit;
+}
+
+.student-filters input {
+    flex: 1;
+}
+
+.student-filters input:focus,
+.student-filters select:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+@media (max-width: 700px) {
+    .student-filters {
+        flex-direction: column;
+    }
+}
+.performance-card {
+    margin-top: 35px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 30px;
+}
+
+.performance-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.performance-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 55px;
+    align-items: center;
+    gap: 15px;
+}
+
+.performance-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.performance-bar {
+    height: 12px;
+    background: #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.performance-fill {
+    height: 100%;
+    background: #2563eb;
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+.performance-value {
+    font-size: 13px;
+    font-weight: 600;
+    text-align: right;
+}
+
+@media (max-width: 700px) {
+
+    .performance-row {
+        grid-template-columns: 80px 1fr 45px;
+        gap: 10px;
+    }
+
+    .performance-card {
+        padding: 20px;
+    }
+}
+.student-details {
+    display: none;
+    margin-top: 25px;
+    padding: 25px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+
+.student-details.active {
+    display: block;
+}
+
+.student-details h3 {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.detail-item {
+    margin-bottom: 10px;
+    color: #4b5563;
+}
+
+.detail-item strong {
+    color: #172033;
+}
+
+.risk-message {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #1e40af;
 }

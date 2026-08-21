@@ -77,9 +77,7 @@
 
                 <p>DASHBOARD</p>
 
-                <h2>
-                    Student Overview
-                </h2>
+                <h2>Student Overview</h2>
 
             </div>
 
@@ -100,7 +98,25 @@
                     <h3>At Risk Students</h3>
                     <p>0</p>
                 </div>
+                    <div class="stat-card">
+                        <h3>Average Marks</h3>
+                        <p>0%</p>
+                    </div>
 
+<div class="stat-card">
+    <h3>Risk Percentage</h3>
+    <p>0%</p>
+</div>
+<div class="performance-card">
+
+    <div class="section-heading">
+        <p>PERFORMANCE ANALYTICS</p>
+        <h2>Student Performance Overview</h2>
+    </div>
+
+    <div id="performanceChart" class="performance-chart"></div>
+
+</div>
             </div>
 
         </section>
@@ -113,69 +129,93 @@
 
                 <p>STUDENTS</p>
 
-                <h2>
-                    Student Records
-                </h2>
+                <h2>Student Records</h2>
 
             </div>
 
-           <div class="student-table-container">
-<div class="student-form">
 
-    <h3>Add New Student</h3>
+            <!-- Add Student Form -->
+            <div class="student-form">
 
-    <form id="studentForm">
+                <h3>Add New Student</h3>
 
-        <input
-            type="text"
-            id="studentName"
-            placeholder="Student name"
-            required
-        >
+                <form id="studentForm">
 
-        <input
-            type="number"
-            id="attendance"
-            placeholder="Attendance %"
-            min="0"
-            max="100"
-            required
-        >
+                    <input
+                        type="text"
+                        id="studentName"
+                        placeholder="Student name"
+                        required
+                    >
 
-        <input
-            type="number"
-            id="averageMarks"
-            placeholder="Average marks %"
-            min="0"
-            max="100"
-            required
-        >
+                    <input
+                        type="number"
+                        id="attendance"
+                        placeholder="Attendance %"
+                        min="0"
+                        max="100"
+                        required
+                    >
 
-        <button type="submit" class="btn primary-btn">
-            Add Student
-        </button>
+                    <input
+                        type="number"
+                        id="averageMarks"
+                        placeholder="Average marks %"
+                        min="0"
+                        max="100"
+                        required
+                    >
 
-    </form>
+                    <button
+                        type="submit"
+                        class="btn primary-btn">
+                        Add Student
+                    </button>
+
+                </form>
+
+            </div>
+
+<div class="student-filters">
+
+    <input
+        type="text"
+        id="studentSearch"
+        placeholder="Search student..."
+    >
+
+    <select id="riskFilter">
+        <option value="All">All Risk Levels</option>
+        <option value="Low">Low Risk</option>
+        <option value="Medium">Medium Risk</option>
+        <option value="High">High Risk</option>
+    </select>
 
 </div>
-    <table class="student-table">
+            <!-- Student Table -->
+            <div class="student-table-container">
 
-        <thead>
-            <tr>
-    <th>Student</th>
-    <th>Attendance</th>
-    <th>Average Marks</th>
-    <th>Risk Level</th>
-    <th>Actions</th>
-</tr>
-        </thead>
+                <table class="student-table">
 
-        <tbody id="studentTableBody">
-        </tbody>
+                    <thead>
 
-    </table>
+                        <tr>
+                            <th>Student</th>
+                            <th>Attendance</th>
+                            <th>Average Marks</th>
+                            <th>Risk Level</th>
+                            <th>Actions</th>
+                        </tr>
+                        <div id="studentDetails" class="student-details"></div>
 
-</div>
+                    </thead>
+
+                    <tbody id="studentTableBody">
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </section>
 
@@ -187,9 +227,7 @@
 
                 <p>ABOUT EDUTRACK</p>
 
-                <h2>
-                    Why EduTrack?
-                </h2>
+                <h2>Why EduTrack?</h2>
 
             </div>
 
@@ -215,7 +253,6 @@
 
 
     <script src="script.js"></script>
-    
 
 </body>
 
