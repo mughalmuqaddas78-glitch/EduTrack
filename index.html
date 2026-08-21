@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +12,11 @@
 
 <body>
 
+    <!-- Navigation -->
     <header class="header">
         <nav class="navbar">
 
-            <a href="#" class="logo">
+            <a href="#home" class="logo">
                 EduTrack<span>.</span>
             </a>
 
@@ -31,11 +33,14 @@
 
     <main>
 
+        <!-- Hero Section -->
         <section id="home" class="hero">
 
             <div class="hero-content">
 
-                <p class="eyebrow">STUDENT PERFORMANCE SYSTEM</p>
+                <p class="eyebrow">
+                    STUDENT PERFORMANCE & SUPPORT SYSTEM
+                </p>
 
                 <h1>
                     Understand Student
@@ -44,11 +49,12 @@
 
                 <p class="hero-description">
                     EduTrack helps educators monitor attendance,
-                    academic performance and identify students
-                    who may need additional support.
+                    academic performance, and identify students
+                    who may need additional academic support.
                 </p>
 
                 <div class="hero-buttons">
+
                     <a href="#dashboard" class="btn primary-btn">
                         View Dashboard
                     </a>
@@ -56,6 +62,7 @@
                     <a href="#students" class="btn secondary-btn">
                         View Students
                     </a>
+
                 </div>
 
             </div>
@@ -63,12 +70,19 @@
         </section>
 
 
+        <!-- Dashboard Section -->
         <section id="dashboard" class="section">
 
             <div class="section-heading">
+
                 <p>DASHBOARD</p>
-                <h2>Student Overview</h2>
+
+                <h2>
+                    Student Overview
+                </h2>
+
             </div>
+
 
             <div class="dashboard-grid">
 
@@ -83,7 +97,7 @@
                 </div>
 
                 <div class="stat-card">
-                    <h3>At Risk</h3>
+                    <h3>At Risk Students</h3>
                     <p>0</p>
                 </div>
 
@@ -92,16 +106,97 @@
         </section>
 
 
+        <!-- Students Section -->
         <section id="students" class="section">
 
             <div class="section-heading">
+
                 <p>STUDENTS</p>
-                <h2>Student Records</h2>
+
+                <h2>
+                    Student Records
+                </h2>
+
             </div>
 
-            <p>
-                Student records will appear here as we develop
-                the system.
+           <div class="student-table-container">
+<div class="student-form">
+
+    <h3>Add New Student</h3>
+
+    <form id="studentForm">
+
+        <input
+            type="text"
+            id="studentName"
+            placeholder="Student name"
+            required
+        >
+
+        <input
+            type="number"
+            id="attendance"
+            placeholder="Attendance %"
+            min="0"
+            max="100"
+            required
+        >
+
+        <input
+            type="number"
+            id="averageMarks"
+            placeholder="Average marks %"
+            min="0"
+            max="100"
+            required
+        >
+
+        <button type="submit" class="btn primary-btn">
+            Add Student
+        </button>
+
+    </form>
+
+</div>
+    <table class="student-table">
+
+        <thead>
+            <tr>
+    <th>Student</th>
+    <th>Attendance</th>
+    <th>Average Marks</th>
+    <th>Risk Level</th>
+    <th>Actions</th>
+</tr>
+        </thead>
+
+        <tbody id="studentTableBody">
+        </tbody>
+
+    </table>
+
+</div>
+
+        </section>
+
+
+        <!-- About Section -->
+        <section id="about" class="section">
+
+            <div class="section-heading">
+
+                <p>ABOUT EDUTRACK</p>
+
+                <h2>
+                    Why EduTrack?
+                </h2>
+
+            </div>
+
+            <p class="about-text">
+                EduTrack is designed to help educators identify
+                students who may need additional academic support
+                by analyzing attendance and academic performance.
             </p>
 
         </section>
@@ -109,12 +204,19 @@
     </main>
 
 
+    <!-- Footer -->
     <footer class="footer">
-        <p>© 2026 EduTrack. Student Performance & Support System.</p>
+
+        <p>
+            © 2026 EduTrack. Student Performance & Support System.
+        </p>
+
     </footer>
 
 
     <script src="script.js"></script>
+    
 
 </body>
+
 </html>
