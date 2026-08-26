@@ -5,41 +5,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>EduTrack | Student Performance System</title>
+    <title>EduTrack - Student Performance System</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
-    <!-- Navigation -->
+    <!-- ========================================
+         HEADER
+    ========================================= -->
+
     <header class="header">
+
         <nav class="navbar">
 
-            <a href="#home" class="logo">
-                EduTrack<span>.</span>
+            <a href="#" class="logo">
+                Edu<span>Track</span>
             </a>
 
             <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#dashboard">Dashboard</a></li>
-                <li><a href="#students">Students</a></li>
-                <li><a href="#about">About</a></li>
+                <li>
+                    <a href="#home">Home</a>
+                </li>
+
+                <li>
+                    <a href="#dashboard">Dashboard</a>
+                </li>
+
+                <li>
+                    <a href="#students">Students</a>
+                </li>
+
+                <li>
+                    <a href="#about">About</a>
+                </li>
             </ul>
 
         </nav>
+
     </header>
 
 
+    <!-- ========================================
+         HERO
+    ========================================= -->
+
     <main>
 
-        <!-- Hero Section -->
-        <section id="home" class="hero">
+        <section class="hero" id="home">
 
             <div class="hero-content">
 
                 <p class="eyebrow">
-                    STUDENT PERFORMANCE & SUPPORT SYSTEM
+                    STUDENT PERFORMANCE SYSTEM
                 </p>
 
                 <h1>
@@ -49,8 +68,8 @@
 
                 <p class="hero-description">
                     EduTrack helps educators monitor attendance,
-                    academic performance, and identify students
-                    who may need additional academic support.
+                    academic performance, overall progress, and
+                    identify students who may need additional support.
                 </p>
 
                 <div class="hero-buttons">
@@ -60,7 +79,7 @@
                     </a>
 
                     <a href="#students" class="btn secondary-btn">
-                        View Students
+                        Manage Students
                     </a>
 
                 </div>
@@ -70,14 +89,21 @@
         </section>
 
 
-        <!-- Dashboard Section -->
-        <section id="dashboard" class="section">
+        <!-- ========================================
+             DASHBOARD
+        ========================================= -->
+
+        <section class="section" id="dashboard">
 
             <div class="section-heading">
 
-                <p>DASHBOARD</p>
+                <p>
+                    DASHBOARD
+                </p>
 
-                <h2>Student Overview</h2>
+                <h2>
+                    Student Overview
+                </h2>
 
             </div>
 
@@ -85,66 +111,133 @@
             <div class="dashboard-grid">
 
                 <div class="stat-card">
-                    <h3>Total Students</h3>
-                    <p>0</p>
+
+                    <h3>
+                        Total Students
+                    </h3>
+
+                    <p>
+                        0
+                    </p>
+
                 </div>
+
 
                 <div class="stat-card">
-                    <h3>Average Attendance</h3>
-                    <p>0%</p>
+
+                    <h3>
+                        Average Attendance
+                    </h3>
+
+                    <p>
+                        0%
+                    </p>
+
                 </div>
+
 
                 <div class="stat-card">
-                    <h3>At Risk Students</h3>
-                    <p>0</p>
+
+                    <h3>
+                        At Risk Students
+                    </h3>
+
+                    <p>
+                        0
+                    </p>
+
                 </div>
-                    <div class="stat-card">
-                        <h3>Average Marks</h3>
-                        <p>0%</p>
-                    </div>
 
-<div class="stat-card">
-    <h3>Risk Percentage</h3>
-    <p>0%</p>
-</div>
-<div class="performance-card">
 
-    <div class="section-heading">
-        <p>PERFORMANCE ANALYTICS</p>
-        <h2>Student Performance Overview</h2>
-    </div>
+                <div class="stat-card">
 
-    <div id="performanceChart" class="performance-chart"></div>
+                    <h3>
+                        Average Marks
+                    </h3>
 
-</div>
+                    <p>
+                        0%
+                    </p>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <h3>
+                        Risk Percentage
+                    </h3>
+
+                    <p>
+                        0%
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================
+                 PERFORMANCE
+            ========================================= -->
+
+            <div class="performance-card">
+
+                <div class="section-heading">
+
+                    <p>
+                        PERFORMANCE ANALYSIS
+                    </p>
+
+                    <h2>
+                        Overall Performance
+                    </h2>
+
+                </div>
+
+                <div
+                    id="performanceChart"
+                    class="performance-chart">
+                </div>
+
             </div>
 
         </section>
 
 
-        <!-- Students Section -->
-        <section id="students" class="section">
+        <!-- ========================================
+             STUDENTS
+        ========================================= -->
+
+        <section class="section" id="students">
 
             <div class="section-heading">
 
-                <p>STUDENTS</p>
+                <p>
+                    STUDENT MANAGEMENT
+                </p>
 
-                <h2>Student Records</h2>
+                <h2>
+                    Students
+                </h2>
 
             </div>
 
 
-            <!-- Add Student Form -->
+            <!-- Add Student -->
+
             <div class="student-form">
 
-                <h3>Add New Student</h3>
+                <h3>
+                    Add New Student
+                </h3>
 
                 <form id="studentForm">
 
                     <input
                         type="text"
                         id="studentName"
-                        placeholder="Student name"
+                        placeholder="Student Name"
                         required
                     >
 
@@ -160,7 +253,7 @@
                     <input
                         type="number"
                         id="averageMarks"
-                        placeholder="Average marks %"
+                        placeholder="Average Marks %"
                         min="0"
                         max="100"
                         required
@@ -176,23 +269,42 @@
 
             </div>
 
-<div class="student-filters">
 
-    <input
-        type="text"
-        id="studentSearch"
-        placeholder="Search student..."
-    >
+            <!-- Search + Filter -->
 
-    <select id="riskFilter">
-        <option value="All">All Risk Levels</option>
-        <option value="Low">Low Risk</option>
-        <option value="Medium">Medium Risk</option>
-        <option value="High">High Risk</option>
-    </select>
+            <div class="student-filters">
 
-</div>
-            <!-- Student Table -->
+                <input
+                    type="text"
+                    id="studentSearch"
+                    placeholder="Search student by name..."
+                >
+
+                <select id="riskFilter">
+
+                    <option value="All">
+                        All Risk Levels
+                    </option>
+
+                    <option value="Low">
+                        Low Risk
+                    </option>
+
+                    <option value="Medium">
+                        Medium Risk
+                    </option>
+
+                    <option value="High">
+                        High Risk
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Students Table -->
+
             <div class="student-table-container">
 
                 <table class="student-table">
@@ -200,41 +312,83 @@
                     <thead>
 
                         <tr>
-                            <th>Student</th>
-                            <th>Attendance</th>
-                            <th>Average Marks</th>
-                            <th>Risk Level</th>
-                            <th>Actions</th>
+
+                            <th>
+                                Name
+                            </th>
+
+                            <th>
+                                Attendance
+                            </th>
+
+                            <th>
+                                Marks
+                            </th>
+
+                            <th>
+                                Overall Performance
+                            </th>
+
+                            <th>
+                                Risk
+                            </th>
+
+                            <th>
+                                Risk Reason
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
                         </tr>
-                        <div id="studentDetails" class="student-details"></div>
 
                     </thead>
 
                     <tbody id="studentTableBody">
+
                     </tbody>
 
                 </table>
 
             </div>
 
+
+            <!-- Student Details -->
+
+            <div
+                id="studentDetails"
+                class="student-details">
+            </div>
+
         </section>
 
 
-        <!-- About Section -->
-        <section id="about" class="section">
+        <!-- ========================================
+             ABOUT
+        ========================================= -->
+
+        <section class="section" id="about">
 
             <div class="section-heading">
 
-                <p>ABOUT EDUTRACK</p>
+                <p>
+                    ABOUT EDUTRACK
+                </p>
 
-                <h2>Why EduTrack?</h2>
+                <h2>
+                    Smarter Student Monitoring
+                </h2>
 
             </div>
 
             <p class="about-text">
-                EduTrack is designed to help educators identify
-                students who may need additional academic support
-                by analyzing attendance and academic performance.
+                EduTrack is a student performance monitoring system
+                designed to help educators understand academic
+                performance and attendance together. The system
+                calculates overall performance, identifies academic
+                risk levels, and highlights the reasons why a student
+                may need additional attention.
             </p>
 
         </section>
@@ -242,17 +396,26 @@
     </main>
 
 
-    <!-- Footer -->
+    <!-- ========================================
+         FOOTER
+    ========================================= -->
+
     <footer class="footer">
 
         <p>
-            © 2026 EduTrack. Student Performance & Support System.
+            © 2026 EduTrack. Student Performance System.
         </p>
 
     </footer>
 
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!-- ========================================
+         JAVASCRIPT
+    ========================================= -->
+
+    <script
+        src="{{ url_for('static', filename='script.js') }}">
+    </script>
 
 </body>
 

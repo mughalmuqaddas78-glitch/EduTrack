@@ -1,36 +1,16 @@
-const defaultStudents = [
-    {
-        name: "Ali",
-        attendance: 92,
-        averageMarks: 82
-    },
-    {
-        name: "Sara",
-        attendance: 78,
-        averageMarks: 65
-    },
-    {
-        name: "Ahmed",
-        attendance: 54,
-        averageMarks: 42
-    }
-];
+let students = [];
 
 
 // ================================
 // Load Students
 // ================================
 
-let students = [];
-
 async function loadStudents() {
-
     try {
-
         const response = await fetch("/api/students");
 
         if (!response.ok) {
-            throw new Error("Failed to load students from Flask.");
+            throw new Error("Failed to load students.");
         }
 
         students = await response.json();
@@ -38,39 +18,12 @@ async function loadStudents() {
         refreshUI();
 
     } catch (error) {
+        console.error("Error loading students:", error);
 
-        console.error("Flask API error:", error);
-
-        // Fallback to localStorage
-        try {
-
-            const savedStudents =
-                localStorage.getItem("students");
-
-            students = savedStudents
-                ? JSON.parse(savedStudents)
-                : defaultStudents;
-
-        } catch (storageError) {
-
-            students = defaultStudents;
-        }
-
-        refreshUI();
+        alert(
+            `Unable to load students.\n\n${error.message}`
+        );
     }
-}
-
-
-// ================================
-// Save Students
-// ================================
-
-function saveStudents() {
-
-    localStorage.setItem(
-        "students",
-        JSON.stringify(students)
-    );
 }
 
 
@@ -79,7 +32,6 @@ function saveStudents() {
 // ================================
 
 function getRiskLevel(student) {
-
     if (
         student.attendance < 60 ||
         student.averageMarks < 50
@@ -99,38 +51,88 @@ function getRiskLevel(student) {
 
 
 // ================================
+// Calculate Overall Performance
+// ================================
+
+function getOverallPerformance(student) {
+    return (
+        (student.averageMarks * 0.6) +
+        (student.attendance * 0.4)
+    );
+}
+
+
+// ================================
+// Calculate Risk Reason
+// ================================
+
+function getRiskReason(student) {
+    const lowAttendance = student.attendance < 60;
+    const lowMarks = student.averageMarks < 50;
+
+    const attendanceNeedsImprovement =
+        student.attendance < 75;
+
+    const marksNeedImprovement =
+        student.averageMarks < 65;
+
+    if (lowAttendance && lowMarks) {
+        return "Low attendance & low marks";
+    }
+
+    if (lowAttendance) {
+        return "Low attendance";
+    }
+
+    if (lowMarks) {
+        return "Low marks";
+    }
+
+    if (
+        attendanceNeedsImprovement &&
+        marksNeedImprovement
+    ) {
+        return "Attendance & marks need improvement";
+    }
+
+    if (attendanceNeedsImprovement) {
+        return "Attendance needs improvement";
+    }
+
+    if (marksNeedImprovement) {
+        return "Marks need improvement";
+    }
+
+    return "Performing well";
+}
+
+
+// ================================
 // Update Dashboard
 // ================================
 
 function updateDashboard() {
-
     const totalStudents = students.length;
 
-    const totalCard =
-        document.querySelector(
-            ".stat-card:nth-child(1) p"
-        );
+    const totalCard = document.querySelector(
+        ".stat-card:nth-child(1) p"
+    );
 
-    const attendanceCard =
-        document.querySelector(
-            ".stat-card:nth-child(2) p"
-        );
+    const attendanceCard = document.querySelector(
+        ".stat-card:nth-child(2) p"
+    );
 
-    const riskCard =
-        document.querySelector(
-            ".stat-card:nth-child(3) p"
-        );
+    const riskCard = document.querySelector(
+        ".stat-card:nth-child(3) p"
+    );
 
-    const marksCard =
-        document.querySelector(
-            ".stat-card:nth-child(4) p"
-        );
+    const marksCard = document.querySelector(
+        ".stat-card:nth-child(4) p"
+    );
 
-    const riskPercentageCard =
-        document.querySelector(
-            ".stat-card:nth-child(5) p"
-        );
-
+    const riskPercentageCard = document.querySelector(
+        ".stat-card:nth-child(5) p"
+    );
 
     if (
         !totalCard ||
@@ -142,9 +144,7 @@ function updateDashboard() {
         return;
     }
 
-
     if (totalStudents === 0) {
-
         totalCard.textContent = "0";
         attendanceCard.textContent = "0%";
         riskCard.textContent = "0";
@@ -154,14 +154,12 @@ function updateDashboard() {
         return;
     }
 
-
     const averageAttendance =
         students.reduce(
             (sum, student) =>
                 sum + student.attendance,
             0
         ) / totalStudents;
-
 
     const averageMarks =
         students.reduce(
@@ -170,17 +168,14 @@ function updateDashboard() {
             0
         ) / totalStudents;
 
-
     const atRiskStudents =
         students.filter(
             student =>
                 getRiskLevel(student) === "High"
         ).length;
 
-
     const riskPercentage =
         (atRiskStudents / totalStudents) * 100;
-
 
     totalCard.textContent =
         totalStudents;
@@ -204,7 +199,6 @@ function updateDashboard() {
 // ================================
 
 function renderStudents() {
-
     const studentTableBody =
         document.querySelector(
             "#studentTableBody"
@@ -220,26 +214,21 @@ function renderStudents() {
             "#riskFilter"
         );
 
-
     if (!studentTableBody) {
         return;
     }
 
-
     studentTableBody.innerHTML = "";
-
 
     const searchTerm =
         searchInput
             ? searchInput.value.toLowerCase().trim()
             : "";
 
-
     const selectedRisk =
         riskFilter
             ? riskFilter.value
             : "All";
-
 
     const filteredStudents =
         students
@@ -254,11 +243,9 @@ function renderStudents() {
                         .toLowerCase()
                         .includes(searchTerm);
 
-
                 const matchesRisk =
                     selectedRisk === "All" ||
                     getRiskLevel(student) === selectedRisk;
-
 
                 return (
                     matchesSearch &&
@@ -266,12 +253,10 @@ function renderStudents() {
                 );
             });
 
-
     if (filteredStudents.length === 0) {
-
         studentTableBody.innerHTML = `
             <tr>
-                <td colspan="5">
+                <td colspan="7">
                     No students found.
                 </td>
             </tr>
@@ -280,17 +265,20 @@ function renderStudents() {
         return;
     }
 
-
     filteredStudents.forEach(
         ({ student, index }) => {
 
             const riskLevel =
                 getRiskLevel(student);
 
+            const overallPerformance =
+                getOverallPerformance(student);
+
+            const riskReason =
+                getRiskReason(student);
 
             const row =
                 document.createElement("tr");
-
 
             row.innerHTML = `
                 <td>
@@ -306,10 +294,17 @@ function renderStudents() {
                 </td>
 
                 <td>
-                    <span
-                        class="risk-badge ${riskLevel.toLowerCase()}">
+                    ${overallPerformance.toFixed(1)}%
+                </td>
+
+                <td>
+                    <span class="risk-badge ${riskLevel.toLowerCase()}">
                         ${riskLevel}
                     </span>
+                </td>
+
+                <td>
+                    ${riskReason}
                 </td>
 
                 <td>
@@ -322,19 +317,18 @@ function renderStudents() {
 
                     <button
                         class="edit-btn"
-                        onclick="editStudent(${index})">
+                        onclick="editStudent(${student.id})">
                         Edit
                     </button>
 
                     <button
                         class="delete-btn"
-                        onclick="deleteStudent(${index})">
+                        onclick="deleteStudent(${student.id})">
                         Delete
                     </button>
 
                 </td>
             `;
-
 
             studentTableBody.appendChild(row);
         }
@@ -347,23 +341,18 @@ function renderStudents() {
 // ================================
 
 function renderPerformanceChart() {
-
     const chart =
         document.querySelector(
             "#performanceChart"
         );
 
-
     if (!chart) {
         return;
     }
 
-
     chart.innerHTML = "";
 
-
     if (students.length === 0) {
-
         chart.innerHTML = `
             <p>
                 No student data available.
@@ -373,36 +362,54 @@ function renderPerformanceChart() {
         return;
     }
 
-
     students.forEach(student => {
+
+        const overallPerformance =
+            getOverallPerformance(student);
 
         const row =
             document.createElement("div");
 
-
         row.className =
             "performance-row";
 
-
         row.innerHTML = `
-            <span class="performance-name">
-                ${student.name}
-            </span>
+            <div class="performance-info">
+
+                <span class="performance-name">
+                    ${student.name}
+                </span>
+
+                <span class="performance-value">
+                    Overall:
+                    ${overallPerformance.toFixed(1)}%
+                </span>
+
+            </div>
+
+            <div class="performance-details">
+
+                <span>
+                    Marks:
+                    ${student.averageMarks}%
+                </span>
+
+                <span>
+                    Attendance:
+                    ${student.attendance}%
+                </span>
+
+            </div>
 
             <div class="performance-bar">
 
                 <div
                     class="performance-fill"
-                    style="width: ${student.averageMarks}%;">
+                    style="width: ${overallPerformance}%;">
                 </div>
 
             </div>
-
-            <span class="performance-value">
-                ${student.averageMarks}%
-            </span>
         `;
-
 
         chart.appendChild(row);
     });
@@ -410,15 +417,12 @@ function renderPerformanceChart() {
 
 
 // ================================
-// Refresh Entire UI
+// Refresh UI
 // ================================
 
 function refreshUI() {
-
     updateDashboard();
-
     renderStudents();
-
     renderPerformanceChart();
 }
 
@@ -432,15 +436,13 @@ const studentForm =
         "#studentForm"
     );
 
-
 if (studentForm) {
 
     studentForm.addEventListener(
         "submit",
-        function (event) {
+        async function (event) {
 
             event.preventDefault();
-
 
             const name =
                 document
@@ -448,27 +450,21 @@ if (studentForm) {
                     .value
                     .trim();
 
-
             const attendance =
                 Number(
-                    document
-                        .querySelector("#attendance")
-                        .value
+                    document.querySelector(
+                        "#attendance"
+                    ).value
                 );
-
 
             const averageMarks =
                 Number(
-                    document
-                        .querySelector("#averageMarks")
-                        .value
+                    document.querySelector(
+                        "#averageMarks"
+                    ).value
                 );
 
-
-            // Validation
-
             if (!name) {
-
                 alert(
                     "Please enter the student's name."
                 );
@@ -476,13 +472,11 @@ if (studentForm) {
                 return;
             }
 
-
             if (
                 Number.isNaN(attendance) ||
                 attendance < 0 ||
                 attendance > 100
             ) {
-
                 alert(
                     "Attendance must be between 0 and 100."
                 );
@@ -490,13 +484,11 @@ if (studentForm) {
                 return;
             }
 
-
             if (
                 Number.isNaN(averageMarks) ||
                 averageMarks < 0 ||
                 averageMarks > 100
             ) {
-
                 alert(
                     "Average marks must be between 0 and 100."
                 );
@@ -504,29 +496,64 @@ if (studentForm) {
                 return;
             }
 
-
             const newStudent = {
-
-                name: name,
-
-                attendance: attendance,
-
-                averageMarks: averageMarks
-
+                name,
+                attendance,
+                averageMarks
             };
 
+            try {
 
-            students.push(newStudent);
+                const response =
+                    await fetch(
+                        "/api/students",
+                        {
+                            method: "POST",
 
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
 
-            saveStudents();
+                            body:
+                                JSON.stringify(
+                                    newStudent
+                                )
+                        }
+                    );
 
+                const result =
+                    await response.json();
 
-            studentForm.reset();
+                if (
+                    !response.ok ||
+                    !result.success
+                ) {
+                    throw new Error(
+                        result.message ||
+                        "Failed to add student."
+                    );
+                }
 
+                students.push(
+                    result.student
+                );
 
-            refreshUI();
+                studentForm.reset();
 
+                refreshUI();
+
+            } catch (error) {
+
+                console.error(
+                    "Error adding student:",
+                    error
+                );
+
+                alert(
+                    `Unable to add student.\n\n${error.message}`
+                );
+            }
         }
     );
 }
@@ -536,35 +563,69 @@ if (studentForm) {
 // Delete Student
 // ================================
 
-function deleteStudent(index) {
+async function deleteStudent(studentId) {
 
     const student =
-        students[index];
-
+        students.find(
+            student =>
+                student.id === studentId
+        );
 
     if (!student) {
         return;
     }
-
 
     const confirmDelete =
         confirm(
             `Are you sure you want to delete ${student.name}?`
         );
 
-
     if (!confirmDelete) {
         return;
     }
 
+    try {
 
-    students.splice(index, 1);
+        const response =
+            await fetch(
+                `/api/students/${studentId}`,
+                {
+                    method: "DELETE"
+                }
+            );
 
+        const result =
+            await response.json();
 
-    saveStudents();
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+            throw new Error(
+                result.message ||
+                "Failed to delete student."
+            );
+        }
 
+        students =
+            students.filter(
+                student =>
+                    student.id !== studentId
+            );
 
-    refreshUI();
+        refreshUI();
+
+    } catch (error) {
+
+        console.error(
+            "Error deleting student:",
+            error
+        );
+
+        alert(
+            `Unable to delete student.\n\n${error.message}`
+        );
+    }
 }
 
 
@@ -572,16 +633,17 @@ function deleteStudent(index) {
 // Edit Student
 // ================================
 
-function editStudent(index) {
+async function editStudent(studentId) {
 
     const student =
-        students[index];
-
+        students.find(
+            student =>
+                student.id === studentId
+        );
 
     if (!student) {
         return;
     }
-
 
     const newName =
         prompt(
@@ -589,31 +651,14 @@ function editStudent(index) {
             student.name
         );
 
-
     if (newName === null) {
         return;
     }
 
+    const trimmedName =
+        newName.trim();
 
-    const newAttendance =
-        Number(
-            prompt(
-                "Enter attendance percentage:",
-                student.attendance
-            )
-        );
-
-
-    const newMarks =
-        Number(
-            prompt(
-                "Enter average marks percentage:",
-                student.averageMarks
-            )
-        );
-
-
-    if (!newName.trim()) {
+    if (!trimmedName) {
 
         alert(
             "Student name cannot be empty."
@@ -622,6 +667,18 @@ function editStudent(index) {
         return;
     }
 
+    const attendanceInput =
+        prompt(
+            "Enter attendance percentage:",
+            student.attendance
+        );
+
+    if (attendanceInput === null) {
+        return;
+    }
+
+    const newAttendance =
+        Number(attendanceInput);
 
     if (
         Number.isNaN(newAttendance) ||
@@ -636,6 +693,18 @@ function editStudent(index) {
         return;
     }
 
+    const marksInput =
+        prompt(
+            "Enter average marks percentage:",
+            student.averageMarks
+        );
+
+    if (marksInput === null) {
+        return;
+    }
+
+    const newMarks =
+        Number(marksInput);
 
     if (
         Number.isNaN(newMarks) ||
@@ -650,23 +719,66 @@ function editStudent(index) {
         return;
     }
 
+    const updatedStudent = {
+        name: trimmedName,
+        attendance: newAttendance,
+        averageMarks: newMarks
+    };
 
-    students[index].name =
-        newName.trim();
+    try {
 
+        const response =
+            await fetch(
+                `/api/students/${studentId}`,
+                {
+                    method: "PUT",
 
-    students[index].attendance =
-        newAttendance;
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
+                    body:
+                        JSON.stringify(
+                            updatedStudent
+                        )
+                }
+            );
 
-    students[index].averageMarks =
-        newMarks;
+        const result =
+            await response.json();
 
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+            throw new Error(
+                result.message ||
+                "Failed to update student."
+            );
+        }
 
-    saveStudents();
+        students =
+            students.map(
+                student =>
+                    student.id === studentId
+                        ? result.student
+                        : student
+            );
 
+        refreshUI();
 
-    refreshUI();
+    } catch (error) {
+
+        console.error(
+            "Error updating student:",
+            error
+        );
+
+        alert(
+            `Unable to update student.\n\n${error.message}`
+        );
+    }
 }
 
 
@@ -679,29 +791,29 @@ function viewStudent(index) {
     const student =
         students[index];
 
-
     if (!student) {
         return;
     }
 
-
     const riskLevel =
         getRiskLevel(student);
 
+    const riskReason =
+        getRiskReason(student);
+
+    const overallPerformance =
+        getOverallPerformance(student);
 
     const details =
         document.querySelector(
             "#studentDetails"
         );
 
-
     if (!details) {
         return;
     }
 
-
     let message;
-
 
     if (riskLevel === "High") {
 
@@ -719,7 +831,6 @@ function viewStudent(index) {
             "This student is currently performing within the expected range.";
     }
 
-
     details.innerHTML = `
         <h3>${student.name}</h3>
 
@@ -734,15 +845,24 @@ function viewStudent(index) {
         </div>
 
         <div class="detail-item">
+            <strong>Overall Performance:</strong>
+            ${overallPerformance.toFixed(1)}%
+        </div>
+
+        <div class="detail-item">
             <strong>Risk Level:</strong>
             ${riskLevel}
+        </div>
+
+        <div class="detail-item">
+            <strong>Risk Reason:</strong>
+            ${riskReason}
         </div>
 
         <div class="risk-message">
             ${message}
         </div>
     `;
-
 
     details.classList.add("active");
 }
@@ -757,7 +877,6 @@ const studentSearch =
         "#studentSearch"
     );
 
-
 if (studentSearch) {
 
     studentSearch.addEventListener(
@@ -768,14 +887,13 @@ if (studentSearch) {
 
 
 // ================================
-// Filter by Risk
+// Filter Students
 // ================================
 
 const riskFilter =
     document.querySelector(
         "#riskFilter"
     );
-
 
 if (riskFilter) {
 
