@@ -6,19 +6,42 @@ app = Flask(__name__)
 DATABASE = "students.db"
 
 
-# =========================================
-# Database Connection
-# =========================================
+# ========================================
+# Database
+# ========================================
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
 
+def validate_student_data(data):
+    if not data:
+        return None, "No data received"
 
-# =========================================
-# Initialize Database
-# =========================================
+    name = str(data.get("name", "")).strip()
+
+    if len(name) < 2:
+        return None, "Student name must contain at least 2 characters"
+
+    try:
+        attendance = int(data.get("attendance"))
+        average_marks = int(data.get("averageMarks"))
+    except (ValueError, TypeError):
+        return None, "Attendance and marks must be valid numbers"
+
+    if not 0 <= attendance <= 100:
+        return None, "Attendance must be between 0 and 100"
+
+    if not 0 <= average_marks <= 100:
+        return None, "Average marks must be between 0 and 100"
+
+    return {
+        "name": name,
+        "attendance": attendance,
+        "averageMarks": average_marks
+    }, None
+
 
 def init_db():
     conn = get_db_connection()
@@ -35,10 +58,6 @@ def init_db():
     conn.commit()
     conn.close()
 
-
-# =========================================
-# Seed Initial Students
-# =========================================
 
 def seed_students():
     conn = get_db_connection()
@@ -62,18 +81,68 @@ def seed_students():
     conn.close()
 
 
-# =========================================
+# ========================================
+# Validation
+# ========================================
+
+def validate_student_data(data):
+    if not data:
+        return None, "No data received"
+
+    required_fields = [
+        "name",
+        "attendance",
+        "averageMarks"
+    ]
+
+    for field in required_fields:
+        if field not in data:
+            return None, f"{field} is required"
+
+    name = str(data["name"]).strip()
+
+    if not name:
+        return None, "Student name cannot be empty"
+
+    try:
+        attendance = int(data["attendance"])
+        average_marks = int(data["averageMarks"])
+    except (ValueError, TypeError):
+        return None, "Attendance and averageMarks must be numbers"
+
+    if not 0 <= attendance <= 100:
+        return None, "Attendance must be between 0 and 100"
+
+    if not 0 <= average_marks <= 100:
+        return None, "Average marks must be between 0 and 100"
+
+    return {
+        "name": name,
+        "attendance": attendance,
+        "averageMarks": average_marks
+    }, None
+
+
+def get_student_by_id(conn, student_id):
+    return conn.execute("""
+        SELECT id, name, attendance, averageMarks
+        FROM students
+        WHERE id = ?
+    """, (student_id,)).fetchone()
+
+
+# ========================================
 # Home
-# =========================================
+# ========================================
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-# =========================================
+# ========================================
 # Get All Students
-# =========================================
+# ========================================
 
 @app.route("/api/students", methods=["GET"])
 def get_students():
@@ -90,60 +159,20 @@ def get_students():
     return jsonify([dict(student) for student in students])
 
 
-# =========================================
-# Add New Student
-# =========================================
+# ========================================
+# Add Student
+# ========================================
 
 @app.route("/api/students", methods=["POST"])
 def add_student():
     data = request.get_json()
 
-    if not data:
+    student_data, error = validate_student_data(data)
+
+    if error:
         return jsonify({
             "success": False,
-            "message": "No data received"
-        }), 400
-
-    required_fields = [
-        "name",
-        "attendance",
-        "averageMarks"
-    ]
-
-    for field in required_fields:
-        if field not in data:
-            return jsonify({
-                "success": False,
-                "message": f"{field} is required"
-            }), 400
-
-    name = str(data["name"]).strip()
-
-    if not name:
-        return jsonify({
-            "success": False,
-            "message": "Student name cannot be empty"
-        }), 400
-
-    try:
-        attendance = int(data["attendance"])
-        average_marks = int(data["averageMarks"])
-    except (ValueError, TypeError):
-        return jsonify({
-            "success": False,
-            "message": "Attendance and averageMarks must be numbers"
-        }), 400
-
-    if not 0 <= attendance <= 100:
-        return jsonify({
-            "success": False,
-            "message": "Attendance must be between 0 and 100"
-        }), 400
-
-    if not 0 <= average_marks <= 100:
-        return jsonify({
-            "success": False,
-            "message": "Average marks must be between 0 and 100"
+            "message": error
         }), 400
 
     conn = get_db_connection()
@@ -151,7 +180,11 @@ def add_student():
     cursor = conn.execute("""
         INSERT INTO students (name, attendance, averageMarks)
         VALUES (?, ?, ?)
-    """, (name, attendance, average_marks))
+    """, (
+        student_data["name"],
+        student_data["attendance"],
+        student_data["averageMarks"]
+    ))
 
     student_id = cursor.lastrowid
 
@@ -171,69 +204,28 @@ def add_student():
         "student": dict(new_student)
     }), 201
 
-
-# =========================================
+# ========================================
 # Update Student
-# =========================================
+# ========================================
 
 @app.route("/api/students/<int:student_id>", methods=["PUT"])
 def update_student(student_id):
     data = request.get_json()
 
-    if not data:
+    student, error = validate_student_data(data)
+
+    if error:
         return jsonify({
             "success": False,
-            "message": "No data received"
-        }), 400
-
-    required_fields = [
-        "name",
-        "attendance",
-        "averageMarks"
-    ]
-
-    for field in required_fields:
-        if field not in data:
-            return jsonify({
-                "success": False,
-                "message": f"{field} is required"
-            }), 400
-
-    name = str(data["name"]).strip()
-
-    if not name:
-        return jsonify({
-            "success": False,
-            "message": "Student name cannot be empty"
-        }), 400
-
-    try:
-        attendance = int(data["attendance"])
-        average_marks = int(data["averageMarks"])
-    except (ValueError, TypeError):
-        return jsonify({
-            "success": False,
-            "message": "Attendance and averageMarks must be numbers"
-        }), 400
-
-    if not 0 <= attendance <= 100:
-        return jsonify({
-            "success": False,
-            "message": "Attendance must be between 0 and 100"
-        }), 400
-
-    if not 0 <= average_marks <= 100:
-        return jsonify({
-            "success": False,
-            "message": "Average marks must be between 0 and 100"
+            "message": error
         }), 400
 
     conn = get_db_connection()
 
-    existing_student = conn.execute(
-        "SELECT id FROM students WHERE id = ?",
-        (student_id,)
-    ).fetchone()
+    existing_student = get_student_by_id(
+        conn,
+        student_id
+    )
 
     if not existing_student:
         conn.close()
@@ -245,22 +237,24 @@ def update_student(student_id):
 
     conn.execute("""
         UPDATE students
-        SET name = ?, attendance = ?, averageMarks = ?
+        SET
+            name = ?,
+            attendance = ?,
+            averageMarks = ?
         WHERE id = ?
     """, (
-        name,
-        attendance,
-        average_marks,
+        student["name"],
+        student["attendance"],
+        student["averageMarks"],
         student_id
     ))
 
     conn.commit()
 
-    updated_student = conn.execute("""
-        SELECT id, name, attendance, averageMarks
-        FROM students
-        WHERE id = ?
-    """, (student_id,)).fetchone()
+    updated_student = get_student_by_id(
+        conn,
+        student_id
+    )
 
     conn.close()
 
@@ -271,18 +265,18 @@ def update_student(student_id):
     })
 
 
-# =========================================
+# ========================================
 # Delete Student
-# =========================================
+# ========================================
 
 @app.route("/api/students/<int:student_id>", methods=["DELETE"])
 def delete_student(student_id):
     conn = get_db_connection()
 
-    existing_student = conn.execute(
-        "SELECT id FROM students WHERE id = ?",
-        (student_id,)
-    ).fetchone()
+    existing_student = get_student_by_id(
+        conn,
+        student_id
+    )
 
     if not existing_student:
         conn.close()
@@ -306,12 +300,13 @@ def delete_student(student_id):
     })
 
 
-# =========================================
+# ========================================
 # Start Application
-# =========================================
+# ========================================
 
 init_db()
 seed_students()
+
 
 if __name__ == "__main__":
     app.run(debug=True)

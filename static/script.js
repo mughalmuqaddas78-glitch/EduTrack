@@ -1,9 +1,9 @@
 let students = [];
 
 
-// ================================
+// ========================================
 // Load Students
-// ================================
+// ========================================
 
 async function loadStudents() {
     try {
@@ -27,9 +27,9 @@ async function loadStudents() {
 }
 
 
-// ================================
+// ========================================
 // Calculate Risk Level
-// ================================
+// ========================================
 
 function getRiskLevel(student) {
     if (
@@ -50,9 +50,9 @@ function getRiskLevel(student) {
 }
 
 
-// ================================
+// ========================================
 // Calculate Overall Performance
-// ================================
+// ========================================
 
 function getOverallPerformance(student) {
     return (
@@ -62,9 +62,9 @@ function getOverallPerformance(student) {
 }
 
 
-// ================================
+// ========================================
 // Calculate Risk Reason
-// ================================
+// ========================================
 
 function getRiskReason(student) {
     const lowAttendance = student.attendance < 60;
@@ -107,9 +107,48 @@ function getRiskReason(student) {
 }
 
 
-// ================================
+// ========================================
+// Calculate Recommendation
+// ========================================
+
+function getRecommendation(student) {
+    const lowAttendance = student.attendance < 60;
+    const lowMarks = student.averageMarks < 50;
+
+    if (lowAttendance && lowMarks) {
+        return "Student needs both attendance improvement and academic support.";
+    }
+
+    if (lowAttendance) {
+        return "Student should improve attendance and maintain regular class participation.";
+    }
+
+    if (lowMarks) {
+        return "Student needs academic support, revision, and additional practice.";
+    }
+
+    if (
+        student.attendance < 75 &&
+        student.averageMarks < 65
+    ) {
+        return "Monitor the student regularly and provide additional support.";
+    }
+
+    if (student.attendance < 75) {
+        return "Encourage more regular class attendance.";
+    }
+
+    if (student.averageMarks < 65) {
+        return "Encourage additional practice and academic revision.";
+    }
+
+    return "Student is performing well. Continue regular monitoring.";
+}
+
+
+// ========================================
 // Update Dashboard
-// ================================
+// ========================================
 
 function updateDashboard() {
     const totalStudents = students.length;
@@ -177,8 +216,7 @@ function updateDashboard() {
     const riskPercentage =
         (atRiskStudents / totalStudents) * 100;
 
-    totalCard.textContent =
-        totalStudents;
+    totalCard.textContent = totalStudents;
 
     attendanceCard.textContent =
         `${averageAttendance.toFixed(1)}%`;
@@ -194,25 +232,62 @@ function updateDashboard() {
 }
 
 
-// ================================
+// ========================================
+// Update Risk Analysis
+// ========================================
+
+function updateRiskAnalysis() {
+    const highRiskCount = students.filter(
+        student =>
+            getRiskLevel(student) === "High"
+    ).length;
+
+    const mediumRiskCount = students.filter(
+        student =>
+            getRiskLevel(student) === "Medium"
+    ).length;
+
+    const lowRiskCount = students.filter(
+        student =>
+            getRiskLevel(student) === "Low"
+    ).length;
+
+    const highRiskElement =
+        document.querySelector("#highRiskCount");
+
+    const mediumRiskElement =
+        document.querySelector("#mediumRiskCount");
+
+    const lowRiskElement =
+        document.querySelector("#lowRiskCount");
+
+    if (highRiskElement) {
+        highRiskElement.textContent = highRiskCount;
+    }
+
+    if (mediumRiskElement) {
+        mediumRiskElement.textContent = mediumRiskCount;
+    }
+
+    if (lowRiskElement) {
+        lowRiskElement.textContent = lowRiskCount;
+    }
+}
+
+
+// ========================================
 // Render Students
-// ================================
+// ========================================
 
 function renderStudents() {
     const studentTableBody =
-        document.querySelector(
-            "#studentTableBody"
-        );
+        document.querySelector("#studentTableBody");
 
     const searchInput =
-        document.querySelector(
-            "#studentSearch"
-        );
+        document.querySelector("#studentSearch");
 
     const riskFilter =
-        document.querySelector(
-            "#riskFilter"
-        );
+        document.querySelector("#riskFilter");
 
     if (!studentTableBody) {
         return;
@@ -220,15 +295,13 @@ function renderStudents() {
 
     studentTableBody.innerHTML = "";
 
-    const searchTerm =
-        searchInput
-            ? searchInput.value.toLowerCase().trim()
-            : "";
+    const searchTerm = searchInput
+        ? searchInput.value.toLowerCase().trim()
+        : "";
 
-    const selectedRisk =
-        riskFilter
-            ? riskFilter.value
-            : "All";
+    const selectedRisk = riskFilter
+        ? riskFilter.value
+        : "All";
 
     const filteredStudents =
         students
@@ -237,7 +310,6 @@ function renderStudents() {
                 index
             }))
             .filter(({ student }) => {
-
                 const matchesSearch =
                     student.name
                         .toLowerCase()
@@ -265,86 +337,79 @@ function renderStudents() {
         return;
     }
 
-    filteredStudents.forEach(
-        ({ student, index }) => {
+    filteredStudents.forEach(({ student, index }) => {
+        const riskLevel =
+            getRiskLevel(student);
 
-            const riskLevel =
-                getRiskLevel(student);
+        const overallPerformance =
+            getOverallPerformance(student);
 
-            const overallPerformance =
-                getOverallPerformance(student);
+        const riskReason =
+            getRiskReason(student);
 
-            const riskReason =
-                getRiskReason(student);
+        const row =
+            document.createElement("tr");
 
-            const row =
-                document.createElement("tr");
+        row.innerHTML = `
+            <td>
+                ${student.name}
+            </td>
 
-            row.innerHTML = `
-                <td>
-                    ${student.name}
-                </td>
+            <td>
+                ${student.attendance}%
+            </td>
 
-                <td>
-                    ${student.attendance}%
-                </td>
+            <td>
+                ${student.averageMarks}%
+            </td>
 
-                <td>
-                    ${student.averageMarks}%
-                </td>
+            <td>
+                ${overallPerformance.toFixed(1)}%
+            </td>
 
-                <td>
-                    ${overallPerformance.toFixed(1)}%
-                </td>
+            <td>
+                <span class="risk-badge ${riskLevel.toLowerCase()}">
+                    ${riskLevel}
+                </span>
+            </td>
 
-                <td>
-                    <span class="risk-badge ${riskLevel.toLowerCase()}">
-                        ${riskLevel}
-                    </span>
-                </td>
+            <td>
+                ${riskReason}
+            </td>
 
-                <td>
-                    ${riskReason}
-                </td>
+            <td>
+                <button
+                    class="view-btn"
+                    onclick="viewStudent(${index})">
+                    View
+                </button>
 
-                <td>
+                <button
+                    class="edit-btn"
+                    onclick="editStudent(${student.id})">
+                    Edit
+                </button>
 
-                    <button
-                        class="view-btn"
-                        onclick="viewStudent(${index})">
-                        View
-                    </button>
+                <button
+                    class="delete-btn"
+                    onclick="deleteStudent(${student.id})">
+                    Delete
+                </button>
+            </td>
+        `;
 
-                    <button
-                        class="edit-btn"
-                        onclick="editStudent(${student.id})">
-                        Edit
-                    </button>
-
-                    <button
-                        class="delete-btn"
-                        onclick="deleteStudent(${student.id})">
-                        Delete
-                    </button>
-
-                </td>
-            `;
-
-            studentTableBody.appendChild(row);
-        }
-    );
+        studentTableBody.appendChild(row);
+    });
 }
 
 
-// ================================
+// ========================================
 // Performance Chart
-// ================================
+// ========================================
 
 function renderPerformanceChart() {
     const chart =
-        document.querySelector(
-            "#performanceChart"
-        );
+        document.querySelector("#performanceChart");
 
     if (!chart) {
         return;
@@ -363,15 +428,13 @@ function renderPerformanceChart() {
     }
 
     students.forEach(student => {
-
         const overallPerformance =
             getOverallPerformance(student);
 
         const row =
             document.createElement("div");
 
-        row.className =
-            "performance-row";
+        row.className = "performance-row";
 
         row.innerHTML = `
             <div class="performance-info">
@@ -416,32 +479,29 @@ function renderPerformanceChart() {
 }
 
 
-// ================================
+// ========================================
 // Refresh UI
-// ================================
+// ========================================
 
 function refreshUI() {
     updateDashboard();
+    updateRiskAnalysis();
     renderStudents();
     renderPerformanceChart();
 }
 
 
-// ================================
+// ========================================
 // Add Student
-// ================================
+// ========================================
 
 const studentForm =
-    document.querySelector(
-        "#studentForm"
-    );
+    document.querySelector("#studentForm");
 
 if (studentForm) {
-
     studentForm.addEventListener(
         "submit",
         async function (event) {
-
             event.preventDefault();
 
             const name =
@@ -452,16 +512,14 @@ if (studentForm) {
 
             const attendance =
                 Number(
-                    document.querySelector(
-                        "#attendance"
-                    ).value
+                    document.querySelector("#attendance").value
                 );
 
             const averageMarks =
                 Number(
-                    document.querySelector(
-                        "#averageMarks"
-                    ).value
+                    document
+                        .querySelector("#averageMarks")
+                        .value
                 );
 
             if (!name) {
@@ -503,7 +561,6 @@ if (studentForm) {
             };
 
             try {
-
                 const response =
                     await fetch(
                         "/api/students",
@@ -544,7 +601,6 @@ if (studentForm) {
                 refreshUI();
 
             } catch (error) {
-
                 console.error(
                     "Error adding student:",
                     error
@@ -559,12 +615,11 @@ if (studentForm) {
 }
 
 
-// ================================
+// ========================================
 // Delete Student
-// ================================
+// ========================================
 
 async function deleteStudent(studentId) {
-
     const student =
         students.find(
             student =>
@@ -585,7 +640,6 @@ async function deleteStudent(studentId) {
     }
 
     try {
-
         const response =
             await fetch(
                 `/api/students/${studentId}`,
@@ -616,7 +670,6 @@ async function deleteStudent(studentId) {
         refreshUI();
 
     } catch (error) {
-
         console.error(
             "Error deleting student:",
             error
@@ -629,12 +682,11 @@ async function deleteStudent(studentId) {
 }
 
 
-// ================================
+// ========================================
 // Edit Student
-// ================================
+// ========================================
 
 async function editStudent(studentId) {
-
     const student =
         students.find(
             student =>
@@ -659,7 +711,6 @@ async function editStudent(studentId) {
         newName.trim();
 
     if (!trimmedName) {
-
         alert(
             "Student name cannot be empty."
         );
@@ -685,7 +736,6 @@ async function editStudent(studentId) {
         newAttendance < 0 ||
         newAttendance > 100
     ) {
-
         alert(
             "Attendance must be between 0 and 100."
         );
@@ -711,7 +761,6 @@ async function editStudent(studentId) {
         newMarks < 0 ||
         newMarks > 100
     ) {
-
         alert(
             "Average marks must be between 0 and 100."
         );
@@ -726,7 +775,6 @@ async function editStudent(studentId) {
     };
 
     try {
-
         const response =
             await fetch(
                 `/api/students/${studentId}`,
@@ -769,7 +817,6 @@ async function editStudent(studentId) {
         refreshUI();
 
     } catch (error) {
-
         console.error(
             "Error updating student:",
             error
@@ -782,12 +829,11 @@ async function editStudent(studentId) {
 }
 
 
-// ================================
+// ========================================
 // View Student
-// ================================
+// ========================================
 
 function viewStudent(index) {
-
     const student =
         students[index];
 
@@ -816,17 +862,12 @@ function viewStudent(index) {
     let message;
 
     if (riskLevel === "High") {
-
         message =
             "This student may need immediate academic support. Consider reviewing attendance and recent assessments.";
-
     } else if (riskLevel === "Medium") {
-
         message =
             "This student shows some warning signs. Regular monitoring and additional support may be helpful.";
-
     } else {
-
         message =
             "This student is currently performing within the expected range.";
     }
@@ -862,15 +903,20 @@ function viewStudent(index) {
         <div class="risk-message">
             ${message}
         </div>
+
+        <div class="recommendation">
+            <strong>Recommended Action:</strong>
+            ${getRecommendation(student)}
+        </div>
     `;
 
     details.classList.add("active");
 }
 
 
-// ================================
+// ========================================
 // Search Students
-// ================================
+// ========================================
 
 const studentSearch =
     document.querySelector(
@@ -878,7 +924,6 @@ const studentSearch =
     );
 
 if (studentSearch) {
-
     studentSearch.addEventListener(
         "input",
         renderStudents
@@ -886,9 +931,9 @@ if (studentSearch) {
 }
 
 
-// ================================
+// ========================================
 // Filter Students
-// ================================
+// ========================================
 
 const riskFilter =
     document.querySelector(
@@ -896,7 +941,6 @@ const riskFilter =
     );
 
 if (riskFilter) {
-
     riskFilter.addEventListener(
         "change",
         renderStudents
@@ -904,8 +948,8 @@ if (riskFilter) {
 }
 
 
-// ================================
+// ========================================
 // Initial Load
-// ================================
+// ========================================
 
 loadStudents();

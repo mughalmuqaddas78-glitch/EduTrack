@@ -7,7 +7,10 @@
 
     <title>EduTrack - Student Performance System</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
 </head>
 
 <body>
@@ -25,6 +28,7 @@
             </a>
 
             <ul class="nav-links">
+
                 <li>
                     <a href="#home">Home</a>
                 </li>
@@ -40,6 +44,7 @@
                 <li>
                     <a href="#about">About</a>
                 </li>
+
             </ul>
 
         </nav>
@@ -48,10 +53,14 @@
 
 
     <!-- ========================================
-         HERO
+         MAIN CONTENT
     ========================================= -->
 
     <main>
+
+        <!-- ========================================
+             HERO
+        ========================================= -->
 
         <section class="hero" id="home">
 
@@ -74,11 +83,17 @@
 
                 <div class="hero-buttons">
 
-                    <a href="#dashboard" class="btn primary-btn">
+                    <a
+                        href="#dashboard"
+                        class="btn primary-btn"
+                    >
                         View Dashboard
                     </a>
 
-                    <a href="#students" class="btn secondary-btn">
+                    <a
+                        href="#students"
+                        class="btn secondary-btn"
+                    >
                         Manage Students
                     </a>
 
@@ -178,7 +193,7 @@
 
 
             <!-- ========================================
-                 PERFORMANCE
+                 PERFORMANCE ANALYSIS
             ========================================= -->
 
             <div class="performance-card">
@@ -197,7 +212,70 @@
 
                 <div
                     id="performanceChart"
-                    class="performance-chart">
+                    class="performance-chart"
+                ></div>
+
+            </div>
+
+
+            <!-- ========================================
+                 RISK ANALYSIS
+            ========================================= -->
+
+            <div class="performance-card risk-analysis-card">
+
+                <div class="section-heading">
+
+                    <p>
+                        RISK ANALYSIS
+                    </p>
+
+                    <h2>
+                        Student Risk Overview
+                    </h2>
+
+                </div>
+
+                <div class="risk-overview">
+
+                    <div class="risk-summary-card high-risk">
+
+                        <span class="risk-summary-label">
+                            High Risk
+                        </span>
+
+                        <strong id="highRiskCount">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="risk-summary-card medium-risk">
+
+                        <span class="risk-summary-label">
+                            Medium Risk
+                        </span>
+
+                        <strong id="mediumRiskCount">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div class="risk-summary-card low-risk">
+
+                        <span class="risk-summary-label">
+                            Low Risk
+                        </span>
+
+                        <strong id="lowRiskCount">
+                            0
+                        </strong>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -261,7 +339,8 @@
 
                     <button
                         type="submit"
-                        class="btn primary-btn">
+                        class="btn primary-btn"
+                    >
                         Add Student
                     </button>
 
@@ -270,7 +349,7 @@
             </div>
 
 
-            <!-- Search + Filter -->
+            <!-- Search and Filter -->
 
             <div class="student-filters">
 
@@ -358,8 +437,8 @@
 
             <div
                 id="studentDetails"
-                class="student-details">
-            </div>
+                class="student-details"
+            ></div>
 
         </section>
 
@@ -414,8 +493,8 @@
     ========================================= -->
 
     <script
-        src="{{ url_for('static', filename='script.js') }}">
-    </script>
+        src="{{ url_for('static', filename='script.js') }}"
+    ></script>
 
 </body>
 

@@ -31,6 +31,12 @@ ul {
     list-style: none;
 }
 
+button,
+input,
+select {
+    font-family: inherit;
+}
+
 
 /* ========================================
    HEADER
@@ -46,7 +52,7 @@ ul {
 
 .navbar {
     max-width: 1200px;
-    margin: auto;
+    margin: 0 auto;
     padding: 20px 30px;
 
     display: flex;
@@ -72,7 +78,7 @@ ul {
     color: #4b5563;
     font-size: 14px;
     font-weight: 500;
-    transition: 0.3s;
+    transition: color 0.3s ease;
 }
 
 .nav-links a:hover {
@@ -87,7 +93,7 @@ ul {
 .hero {
     min-height: calc(100vh - 80px);
     max-width: 1200px;
-    margin: auto;
+    margin: 0 auto;
     padding: 100px 30px;
 
     display: flex;
@@ -136,9 +142,15 @@ ul {
 .btn {
     display: inline-block;
     padding: 13px 24px;
+    border: none;
     border-radius: 8px;
     font-weight: 600;
-    transition: 0.3s;
+    cursor: pointer;
+    transition:
+        background 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease,
+        transform 0.3s ease;
 }
 
 .primary-btn {
@@ -154,6 +166,7 @@ ul {
 .secondary-btn {
     background: white;
     border: 1px solid #cbd5e1;
+    color: #172033;
 }
 
 .secondary-btn:hover {
@@ -168,7 +181,7 @@ ul {
 
 .section {
     max-width: 1200px;
-    margin: auto;
+    margin: 0 auto;
     padding: 90px 30px;
 }
 
@@ -186,6 +199,7 @@ ul {
 .section-heading h2 {
     font-family: 'Playfair Display', serif;
     font-size: 42px;
+    line-height: 1.2;
     margin-top: 8px;
 }
 
@@ -196,7 +210,7 @@ ul {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
 }
 
@@ -249,8 +263,9 @@ ul {
 
 #studentForm {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) auto;
     gap: 12px;
+    align-items: center;
 }
 
 #studentForm input {
@@ -258,13 +273,14 @@ ul {
     padding: 12px 14px;
     border: 1px solid #cbd5e1;
     border-radius: 7px;
-    font: inherit;
     background: white;
+    color: #172033;
 }
 
 #studentForm input:focus {
     outline: none;
     border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
 
@@ -283,18 +299,20 @@ ul {
     padding: 11px 14px;
     border: 1px solid #cbd5e1;
     border-radius: 7px;
-    font: inherit;
     background: white;
+    color: #172033;
 }
 
 .student-filters input {
     flex: 1;
+    min-width: 0;
 }
 
 .student-filters input:focus,
 .student-filters select:focus {
     outline: none;
     border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
 
@@ -314,8 +332,6 @@ ul {
     border-collapse: collapse;
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    overflow: hidden;
 }
 
 .student-table th,
@@ -336,6 +352,7 @@ ul {
 
 .student-table td {
     font-size: 14px;
+    color: #334155;
 }
 
 .student-table tr:last-child td {
@@ -386,7 +403,10 @@ ul {
     font-size: 12px;
     font-weight: 600;
     margin-right: 5px;
-    transition: 0.2s;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        opacity 0.2s ease;
 }
 
 .view-btn {
@@ -429,7 +449,7 @@ ul {
 .performance-chart {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 0;
 }
 
 
@@ -460,6 +480,7 @@ ul {
 .performance-name {
     font-size: 15px;
     font-weight: 600;
+    color: #172033;
 }
 
 .performance-value {
@@ -496,6 +517,58 @@ ul {
     background: #2563eb;
     border-radius: 20px;
     transition: width 0.4s ease;
+}
+
+
+/* ========================================
+   RISK ANALYSIS
+======================================== */
+
+.risk-analysis-card {
+    margin-top: 35px;
+}
+
+.risk-overview {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.risk-summary-card {
+    padding: 22px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+}
+
+.risk-summary-card strong {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.risk-summary-label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.high-risk {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.medium-risk {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.low-risk {
+    background: #f0fdf4;
+    color: #166534;
 }
 
 
@@ -540,6 +613,26 @@ ul {
 
 
 /* ========================================
+   RECOMMENDATION
+======================================== */
+
+.recommendation {
+    margin-top: 15px;
+    padding: 15px 18px;
+    border-radius: 8px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+}
+
+.recommendation strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #14532d;
+}
+
+
+/* ========================================
    FOOTER
 ======================================== */
 
@@ -559,10 +652,14 @@ ul {
 @media (max-width: 900px) {
 
     .dashboard-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     #studentForm {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .risk-overview {
         grid-template-columns: 1fr 1fr;
     }
 }
@@ -595,11 +692,16 @@ ul {
         font-size: 48px;
     }
 
+    .hero-description {
+        font-size: 16px;
+    }
+
     .hero-buttons {
         flex-direction: column;
     }
 
     .btn {
+        width: 100%;
         text-align: center;
     }
 
@@ -644,6 +746,10 @@ ul {
 
     .performance-value {
         text-align: left;
+    }
+
+    .risk-overview {
+        grid-template-columns: 1fr;
     }
 
     .student-details {
