@@ -15,20 +15,31 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+
 def validate_student_data(data):
     if not data:
         return None, "No data received"
 
-    name = str(data.get("name", "")).strip()
+    required_fields = [
+        "name",
+        "attendance",
+        "averageMarks"
+    ]
 
-    if len(name) < 2:
-        return None, "Student name must contain at least 2 characters"
+    for field in required_fields:
+        if field not in data:
+            return None, f"{field} is required"
+
+    name = str(data["name"]).strip()
+
+    if not name:
+        return None, "Student name cannot be empty"
 
     try:
-        attendance = int(data.get("attendance"))
-        average_marks = int(data.get("averageMarks"))
+        attendance = int(data["attendance"])
+        average_marks = int(data["averageMarks"])
     except (ValueError, TypeError):
-        return None, "Attendance and marks must be valid numbers"
+        return None, "Attendance and averageMarks must be numbers"
 
     if not 0 <= attendance <= 100:
         return None, "Attendance must be between 0 and 100"
@@ -79,48 +90,6 @@ def seed_students():
         conn.commit()
 
     conn.close()
-
-
-# ========================================
-# Validation
-# ========================================
-
-def validate_student_data(data):
-    if not data:
-        return None, "No data received"
-
-    required_fields = [
-        "name",
-        "attendance",
-        "averageMarks"
-    ]
-
-    for field in required_fields:
-        if field not in data:
-            return None, f"{field} is required"
-
-    name = str(data["name"]).strip()
-
-    if not name:
-        return None, "Student name cannot be empty"
-
-    try:
-        attendance = int(data["attendance"])
-        average_marks = int(data["averageMarks"])
-    except (ValueError, TypeError):
-        return None, "Attendance and averageMarks must be numbers"
-
-    if not 0 <= attendance <= 100:
-        return None, "Attendance must be between 0 and 100"
-
-    if not 0 <= average_marks <= 100:
-        return None, "Average marks must be between 0 and 100"
-
-    return {
-        "name": name,
-        "attendance": attendance,
-        "averageMarks": average_marks
-    }, None
 
 
 def get_student_by_id(conn, student_id):
@@ -203,6 +172,7 @@ def add_student():
         "message": "Student added successfully",
         "student": dict(new_student)
     }), 201
+
 
 # ========================================
 # Update Student

@@ -380,7 +380,7 @@ function renderStudents() {
             <td>
                 <button
                     class="view-btn"
-                    onclick="viewStudent(${index})">
+                    onclick="viewStudent(${student.id})">
                     View
                 </button>
 
@@ -686,156 +686,202 @@ async function deleteStudent(studentId) {
 // Edit Student
 // ========================================
 
-async function editStudent(studentId) {
-    const student =
-        students.find(
-            student =>
-                student.id === studentId
-        );
+let editingStudentId = null;
+
+function editStudent(studentId) {
+
+    const student = students.find(
+        student => student.id === studentId
+    );
 
     if (!student) {
         return;
     }
 
-    const newName =
-        prompt(
-            "Enter student name:",
-            student.name
-        );
+    editingStudentId = studentId;
 
-    if (newName === null) {
-        return;
-    }
+    document.querySelector("#editStudentName").value =
+        student.name;
 
-    const trimmedName =
-        newName.trim();
+    document.querySelector("#editAttendance").value =
+        student.attendance;
 
-    if (!trimmedName) {
-        alert(
-            "Student name cannot be empty."
-        );
+    document.querySelector("#editAverageMarks").value =
+        student.averageMarks;
 
-        return;
-    }
+    document.querySelector("#editModal").classList.add("active");
+}
+const editStudentForm =
+    document.querySelector("#editStudentForm");
 
-    const attendanceInput =
-        prompt(
-            "Enter attendance percentage:",
-            student.attendance
-        );
+if (editStudentForm) {
 
-    if (attendanceInput === null) {
-        return;
-    }
+    editStudentForm.addEventListener(
+        "submit",
+        async function (event) {
 
-    const newAttendance =
-        Number(attendanceInput);
+            event.preventDefault();
 
-    if (
-        Number.isNaN(newAttendance) ||
-        newAttendance < 0 ||
-        newAttendance > 100
-    ) {
-        alert(
-            "Attendance must be between 0 and 100."
-        );
+            const name =
+                document
+                    .querySelector("#editStudentName")
+                    .value
+                    .trim();
 
-        return;
-    }
+            const attendance =
+                Number(
+                    document
+                        .querySelector("#editAttendance")
+                        .value
+                );
 
-    const marksInput =
-        prompt(
-            "Enter average marks percentage:",
-            student.averageMarks
-        );
+            const averageMarks =
+                Number(
+                    document
+                        .querySelector("#editAverageMarks")
+                        .value
+                );
 
-    if (marksInput === null) {
-        return;
-    }
+            try {
 
-    const newMarks =
-        Number(marksInput);
+    const response = await fetch(
+        `/api/students/${editingStudentId}`,
+        {
+            method: "PUT",
 
-    if (
-        Number.isNaN(newMarks) ||
-        newMarks < 0 ||
-        newMarks > 100
-    ) {
-        alert(
-            "Average marks must be between 0 and 100."
-        );
+            headers: {
+                "Content-Type": "application/json"
+            },
 
-        return;
-    }
-
-    const updatedStudent = {
-        name: trimmedName,
-        attendance: newAttendance,
-        averageMarks: newMarks
-    };
-
-    try {
-        const response =
-            await fetch(
-                `/api/students/${studentId}`,
-                {
-                    method: "PUT",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify(
-                            updatedStudent
-                        )
-                }
-            );
-
-        const result =
-            await response.json();
-
-        if (
-            !response.ok ||
-            !result.success
-        ) {
-            throw new Error(
-                result.message ||
-                "Failed to update student."
-            );
+            body: JSON.stringify({
+                name: name,
+                attendance: attendance,
+                averageMarks: averageMarks
+            })
         }
+    );
 
-        students =
-            students.map(
-                student =>
-                    student.id === studentId
-                        ? result.student
-                        : student
-            );
+    const result = await response.json();
 
-        refreshUI();
-
-    } catch (error) {
-        console.error(
-            "Error updating student:",
-            error
-        );
-
-        alert(
-            `Unable to update student.\n\n${error.message}`
+    if (!response.ok || !result.success) {
+        throw new Error(
+            result.message || "Failed to update student."
         );
     }
+
+    students = students.map(
+        student =>
+            student.id === editingStudentId
+                ? result.student
+                : student
+    );
+
+    editStudentForm.reset();
+
+    document
+        .querySelector("#editModal")
+        .classList.remove("active");
+
+    editingStudentId = null;
+
+    refreshUI();
+
+} catch (error) {
+
+    console.error(
+        "Error updating student:",
+        error
+    );
+
+    alert(
+        `Unable to update student.\n\n${error.message}`
+    );
+}
+        }
+    );
+}
+function closeEditModal() {
+
+    const editModal =
+        document.querySelector("#editModal");
+
+    const editStudentForm =
+        document.querySelector("#editStudentForm");
+
+    if (editModal) {
+        editModal.classList.remove("active");
+    }
+
+    if (editStudentForm) {
+        editStudentForm.reset();
+    }
+
+    editingStudentId = null;
+}
+const closeEditButton =
+    document.querySelector("#closeEditModal");
+
+const cancelEditButton =
+    document.querySelector("#cancelEdit");
+
+if (closeEditButton) {
+    closeEditButton.addEventListener(
+        "click",
+        closeEditModal
+    );
 }
 
+if (cancelEditButton) {
+    cancelEditButton.addEventListener(
+        "click",
+        closeEditModal
+    );
+}
+function closeEditModal() {
 
+    const editModal =
+        document.querySelector("#editModal");
+
+    const editStudentForm =
+        document.querySelector("#editStudentForm");
+
+    if (editModal) {
+        editModal.classList.remove("active");
+    }
+
+    if (editStudentForm) {
+        editStudentForm.reset();
+    }
+
+    editingStudentId = null;
+}
+const closeEditButton =
+    document.querySelector("#closeEditModal");
+
+const cancelEditButton =
+    document.querySelector("#cancelEdit");
+
+if (closeEditButton) {
+    closeEditButton.addEventListener(
+        "click",
+        closeEditModal
+    );
+}
+
+if (cancelEditButton) {
+    cancelEditButton.addEventListener(
+        "click",
+        closeEditModal
+    );
+}
 // ========================================
 // View Student
 // ========================================
 
-function viewStudent(index) {
-    const student =
-        students[index];
+function viewStudent(studentId) {
+    const student = students.find(
+        student => student.id === studentId
+    );
 
     if (!student) {
         return;

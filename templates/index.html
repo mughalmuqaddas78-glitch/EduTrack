@@ -439,7 +439,75 @@
                 id="studentDetails"
                 class="student-details"
             ></div>
+            <!-- Edit Student Modal -->
 
+<div id="editModal" class="edit-modal">
+
+    <div class="edit-modal-content">
+
+        <div class="edit-modal-header">
+            <h3>Edit Student</h3>
+
+            <button
+                type="button"
+                id="closeEditModal"
+                class="close-modal-btn"
+            >
+                &times;
+            </button>
+        </div>
+
+        <form id="editStudentForm">
+
+            <input
+                type="text"
+                id="editStudentName"
+                placeholder="Student Name"
+                required
+            >
+
+            <input
+                type="number"
+                id="editAttendance"
+                placeholder="Attendance %"
+                min="0"
+                max="100"
+                required
+            >
+
+            <input
+                type="number"
+                id="editAverageMarks"
+                placeholder="Average Marks %"
+                min="0"
+                max="100"
+                required
+            >
+
+            <div class="edit-modal-actions">
+
+                <button
+                    type="button"
+                    id="cancelEdit"
+                    class="btn secondary-btn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn primary-btn"
+                >
+                    Update Student
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
         </section>
 
 

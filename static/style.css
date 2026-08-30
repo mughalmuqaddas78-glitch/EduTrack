@@ -756,3 +756,104 @@ select {
         padding: 20px;
     }
 }
+ /* ========================================
+    EDIT STUDENT MODAL
+ ======================================== */
+
+.edit-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+
+    background: rgba(15, 23, 42, 0.45);
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.edit-modal.active {
+    display: flex;
+}
+
+.edit-modal-content {
+    width: 100%;
+    max-width: 500px;
+
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    padding: 25px;
+
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
+}
+
+.edit-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 22px;
+}
+
+.edit-modal-header h3 {
+    font-size: 22px;
+    color: #172033;
+}
+
+.close-modal-btn {
+    border: none;
+    background: transparent;
+
+    font-size: 28px;
+    line-height: 1;
+
+    color: #64748b;
+    cursor: pointer;
+
+    padding: 4px 8px;
+}
+
+.close-modal-btn:hover {
+    color: #172033;
+}
+
+#editStudentForm {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+#editStudentForm input {
+    width: 100%;
+    padding: 12px 14px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+
+    background: white;
+    color: #172033;
+}
+
+#editStudentForm input:focus {
+    outline: none;
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.edit-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.edit-modal-actions .btn {
+    width: auto;
+}
