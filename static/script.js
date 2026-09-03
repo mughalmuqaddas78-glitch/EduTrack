@@ -32,6 +32,7 @@ async function loadStudents() {
 // ========================================
 
 function getRiskLevel(student) {
+
     if (
         student.attendance < 60 ||
         student.averageMarks < 50
@@ -55,6 +56,7 @@ function getRiskLevel(student) {
 // ========================================
 
 function getOverallPerformance(student) {
+
     return (
         (student.averageMarks * 0.6) +
         (student.attendance * 0.4)
@@ -67,14 +69,19 @@ function getOverallPerformance(student) {
 // ========================================
 
 function getRiskReason(student) {
-    const lowAttendance = student.attendance < 60;
-    const lowMarks = student.averageMarks < 50;
+
+    const lowAttendance =
+        student.attendance < 60;
+
+    const lowMarks =
+        student.averageMarks < 50;
 
     const attendanceNeedsImprovement =
         student.attendance < 75;
 
     const marksNeedImprovement =
         student.averageMarks < 65;
+
 
     if (lowAttendance && lowMarks) {
         return "Low attendance & low marks";
@@ -112,8 +119,13 @@ function getRiskReason(student) {
 // ========================================
 
 function getRecommendation(student) {
-    const lowAttendance = student.attendance < 60;
-    const lowMarks = student.averageMarks < 50;
+
+    const lowAttendance =
+        student.attendance < 60;
+
+    const lowMarks =
+        student.averageMarks < 50;
+
 
     if (lowAttendance && lowMarks) {
         return "Student needs both attendance improvement and academic support.";
@@ -151,27 +163,36 @@ function getRecommendation(student) {
 // ========================================
 
 function updateDashboard() {
-    const totalStudents = students.length;
 
-    const totalCard = document.querySelector(
-        ".stat-card:nth-child(1) p"
-    );
+    const totalStudents =
+        students.length;
 
-    const attendanceCard = document.querySelector(
-        ".stat-card:nth-child(2) p"
-    );
 
-    const riskCard = document.querySelector(
-        ".stat-card:nth-child(3) p"
-    );
+    const totalCard =
+        document.querySelector(
+            ".stat-card:nth-child(1) p"
+        );
 
-    const marksCard = document.querySelector(
-        ".stat-card:nth-child(4) p"
-    );
+    const attendanceCard =
+        document.querySelector(
+            ".stat-card:nth-child(2) p"
+        );
 
-    const riskPercentageCard = document.querySelector(
-        ".stat-card:nth-child(5) p"
-    );
+    const riskCard =
+        document.querySelector(
+            ".stat-card:nth-child(3) p"
+        );
+
+    const marksCard =
+        document.querySelector(
+            ".stat-card:nth-child(4) p"
+        );
+
+    const riskPercentageCard =
+        document.querySelector(
+            ".stat-card:nth-child(5) p"
+        );
+
 
     if (
         !totalCard ||
@@ -183,7 +204,9 @@ function updateDashboard() {
         return;
     }
 
+
     if (totalStudents === 0) {
+
         totalCard.textContent = "0";
         attendanceCard.textContent = "0%";
         riskCard.textContent = "0";
@@ -193,12 +216,14 @@ function updateDashboard() {
         return;
     }
 
+
     const averageAttendance =
         students.reduce(
             (sum, student) =>
                 sum + student.attendance,
             0
         ) / totalStudents;
+
 
     const averageMarks =
         students.reduce(
@@ -207,16 +232,20 @@ function updateDashboard() {
             0
         ) / totalStudents;
 
+
     const atRiskStudents =
         students.filter(
             student =>
                 getRiskLevel(student) === "High"
         ).length;
 
+
     const riskPercentage =
         (atRiskStudents / totalStudents) * 100;
 
-    totalCard.textContent = totalStudents;
+
+    totalCard.textContent =
+        totalStudents;
 
     attendanceCard.textContent =
         `${averageAttendance.toFixed(1)}%`;
@@ -237,20 +266,27 @@ function updateDashboard() {
 // ========================================
 
 function updateRiskAnalysis() {
-    const highRiskCount = students.filter(
-        student =>
-            getRiskLevel(student) === "High"
-    ).length;
 
-    const mediumRiskCount = students.filter(
-        student =>
-            getRiskLevel(student) === "Medium"
-    ).length;
+    const highRiskCount =
+        students.filter(
+            student =>
+                getRiskLevel(student) === "High"
+        ).length;
 
-    const lowRiskCount = students.filter(
-        student =>
-            getRiskLevel(student) === "Low"
-    ).length;
+
+    const mediumRiskCount =
+        students.filter(
+            student =>
+                getRiskLevel(student) === "Medium"
+        ).length;
+
+
+    const lowRiskCount =
+        students.filter(
+            student =>
+                getRiskLevel(student) === "Low"
+        ).length;
+
 
     const highRiskElement =
         document.querySelector("#highRiskCount");
@@ -261,16 +297,20 @@ function updateRiskAnalysis() {
     const lowRiskElement =
         document.querySelector("#lowRiskCount");
 
+
     if (highRiskElement) {
-        highRiskElement.textContent = highRiskCount;
+        highRiskElement.textContent =
+            highRiskCount;
     }
 
     if (mediumRiskElement) {
-        mediumRiskElement.textContent = mediumRiskCount;
+        mediumRiskElement.textContent =
+            mediumRiskCount;
     }
 
     if (lowRiskElement) {
-        lowRiskElement.textContent = lowRiskCount;
+        lowRiskElement.textContent =
+            lowRiskCount;
     }
 }
 
@@ -280,52 +320,68 @@ function updateRiskAnalysis() {
 // ========================================
 
 function renderStudents() {
+
     const studentTableBody =
-        document.querySelector("#studentTableBody");
+        document.querySelector(
+            "#studentTableBody"
+        );
 
     const searchInput =
-        document.querySelector("#studentSearch");
+        document.querySelector(
+            "#studentSearch"
+        );
 
     const riskFilter =
-        document.querySelector("#riskFilter");
+        document.querySelector(
+            "#riskFilter"
+        );
+
 
     if (!studentTableBody) {
         return;
     }
 
+
     studentTableBody.innerHTML = "";
 
-    const searchTerm = searchInput
-        ? searchInput.value.toLowerCase().trim()
-        : "";
 
-    const selectedRisk = riskFilter
-        ? riskFilter.value
-        : "All";
+    const searchTerm =
+        searchInput
+            ? searchInput.value
+                .toLowerCase()
+                .trim()
+            : "";
+
+
+    const selectedRisk =
+        riskFilter
+            ? riskFilter.value
+            : "All";
+
 
     const filteredStudents =
-        students
-            .map((student, index) => ({
-                student,
-                index
-            }))
-            .filter(({ student }) => {
-                const matchesSearch =
-                    student.name
-                        .toLowerCase()
-                        .includes(searchTerm);
+        students.filter(student => {
 
-                const matchesRisk =
-                    selectedRisk === "All" ||
-                    getRiskLevel(student) === selectedRisk;
+            const matchesSearch =
+                student.name
+                    .toLowerCase()
+                    .includes(searchTerm);
 
-                return (
-                    matchesSearch &&
-                    matchesRisk
-                );
-            });
+
+            const matchesRisk =
+                selectedRisk === "All" ||
+                getRiskLevel(student) === selectedRisk;
+
+
+            return (
+                matchesSearch &&
+                matchesRisk
+            );
+        });
+
 
     if (filteredStudents.length === 0) {
+
         studentTableBody.innerHTML = `
             <tr>
                 <td colspan="7">
@@ -337,18 +393,24 @@ function renderStudents() {
         return;
     }
 
-    filteredStudents.forEach(({ student, index }) => {
+
+    filteredStudents.forEach(student => {
+
         const riskLevel =
             getRiskLevel(student);
+
 
         const overallPerformance =
             getOverallPerformance(student);
 
+
         const riskReason =
             getRiskReason(student);
 
+
         const row =
             document.createElement("tr");
+
 
         row.innerHTML = `
             <td>
@@ -378,25 +440,31 @@ function renderStudents() {
             </td>
 
             <td>
+
                 <button
                     class="view-btn"
-                    onclick="viewStudent(${student.id})">
+                    onclick="viewStudent(${student.id})"
+                >
                     View
                 </button>
 
                 <button
                     class="edit-btn"
-                    onclick="editStudent(${student.id})">
+                    onclick="editStudent(${student.id})"
+                >
                     Edit
                 </button>
 
                 <button
                     class="delete-btn"
-                    onclick="deleteStudent(${student.id})">
+                    onclick="deleteStudent(${student.id})"
+                >
                     Delete
                 </button>
+
             </td>
         `;
+
 
         studentTableBody.appendChild(row);
     });
@@ -408,16 +476,23 @@ function renderStudents() {
 // ========================================
 
 function renderPerformanceChart() {
+
     const chart =
-        document.querySelector("#performanceChart");
+        document.querySelector(
+            "#performanceChart"
+        );
+
 
     if (!chart) {
         return;
     }
 
+
     chart.innerHTML = "";
 
+
     if (students.length === 0) {
+
         chart.innerHTML = `
             <p>
                 No student data available.
@@ -427,16 +502,23 @@ function renderPerformanceChart() {
         return;
     }
 
+
     students.forEach(student => {
+
         const overallPerformance =
             getOverallPerformance(student);
+
 
         const row =
             document.createElement("div");
 
-        row.className = "performance-row";
+
+        row.className =
+            "performance-row";
+
 
         row.innerHTML = `
+
             <div class="performance-info">
 
                 <span class="performance-name">
@@ -449,6 +531,7 @@ function renderPerformanceChart() {
                 </span>
 
             </div>
+
 
             <div class="performance-details">
 
@@ -464,6 +547,7 @@ function renderPerformanceChart() {
 
             </div>
 
+
             <div class="performance-bar">
 
                 <div
@@ -472,7 +556,9 @@ function renderPerformanceChart() {
                 </div>
 
             </div>
+
         `;
+
 
         chart.appendChild(row);
     });
@@ -484,9 +570,13 @@ function renderPerformanceChart() {
 // ========================================
 
 function refreshUI() {
+
     updateDashboard();
+
     updateRiskAnalysis();
+
     renderStudents();
+
     renderPerformanceChart();
 }
 
@@ -496,33 +586,47 @@ function refreshUI() {
 // ========================================
 
 const studentForm =
-    document.querySelector("#studentForm");
+    document.querySelector(
+        "#studentForm"
+    );
+
 
 if (studentForm) {
+
     studentForm.addEventListener(
         "submit",
         async function (event) {
+
             event.preventDefault();
+
 
             const name =
                 document
-                    .querySelector("#studentName")
+                    .querySelector(
+                        "#studentName"
+                    )
                     .value
                     .trim();
 
+
             const attendance =
                 Number(
-                    document.querySelector("#attendance").value
+                    document.querySelector(
+                        "#attendance"
+                    ).value
                 );
+
 
             const averageMarks =
                 Number(
-                    document
-                        .querySelector("#averageMarks")
-                        .value
+                    document.querySelector(
+                        "#averageMarks"
+                    ).value
                 );
 
+
             if (!name) {
+
                 alert(
                     "Please enter the student's name."
                 );
@@ -530,11 +634,13 @@ if (studentForm) {
                 return;
             }
 
+
             if (
                 Number.isNaN(attendance) ||
                 attendance < 0 ||
                 attendance > 100
             ) {
+
                 alert(
                     "Attendance must be between 0 and 100."
                 );
@@ -542,11 +648,13 @@ if (studentForm) {
                 return;
             }
 
+
             if (
                 Number.isNaN(averageMarks) ||
                 averageMarks < 0 ||
                 averageMarks > 100
             ) {
+
                 alert(
                     "Average marks must be between 0 and 100."
                 );
@@ -554,13 +662,20 @@ if (studentForm) {
                 return;
             }
 
+
             const newStudent = {
+
                 name,
+
                 attendance,
+
                 averageMarks
+
             };
 
+
             try {
+
                 const response =
                     await fetch(
                         "/api/students",
@@ -579,32 +694,41 @@ if (studentForm) {
                         }
                     );
 
+
                 const result =
                     await response.json();
+
 
                 if (
                     !response.ok ||
                     !result.success
                 ) {
+
                     throw new Error(
                         result.message ||
                         "Failed to add student."
                     );
                 }
 
+
                 students.push(
                     result.student
                 );
 
+
                 studentForm.reset();
+
 
                 refreshUI();
 
+
             } catch (error) {
+
                 console.error(
                     "Error adding student:",
                     error
                 );
+
 
                 alert(
                     `Unable to add student.\n\n${error.message}`
@@ -619,68 +743,201 @@ if (studentForm) {
 // Delete Student
 // ========================================
 
-async function deleteStudent(studentId) {
+// ========================================
+// Delete Student
+// ========================================
+
+let deletingStudentId = null;
+
+
+// Open Delete Modal
+function deleteStudent(studentId) {
+
     const student =
         students.find(
             student =>
                 student.id === studentId
         );
 
+
     if (!student) {
         return;
     }
 
-    const confirmDelete =
-        confirm(
-            `Are you sure you want to delete ${student.name}?`
+
+    deletingStudentId =
+        studentId;
+
+
+    const deleteMessage =
+        document.querySelector(
+            "#deleteMessage"
         );
 
-    if (!confirmDelete) {
-        return;
+
+    const deleteModal =
+        document.querySelector(
+            "#deleteModal"
+        );
+
+
+    if (deleteMessage) {
+
+        deleteMessage.textContent =
+            `Are you sure you want to delete ${student.name}?`;
     }
 
-    try {
-        const response =
-            await fetch(
-                `/api/students/${studentId}`,
-                {
-                    method: "DELETE"
-                }
-            );
 
-        const result =
-            await response.json();
+    if (deleteModal) {
 
-        if (
-            !response.ok ||
-            !result.success
-        ) {
-            throw new Error(
-                result.message ||
-                "Failed to delete student."
-            );
-        }
-
-        students =
-            students.filter(
-                student =>
-                    student.id !== studentId
-            );
-
-        refreshUI();
-
-    } catch (error) {
-        console.error(
-            "Error deleting student:",
-            error
-        );
-
-        alert(
-            `Unable to delete student.\n\n${error.message}`
+        deleteModal.classList.add(
+            "active"
         );
     }
 }
 
+
+// ========================================
+// Confirm Delete
+// ========================================
+
+const confirmDeleteButton =
+    document.querySelector(
+        "#confirmDelete"
+    );
+
+
+if (confirmDeleteButton) {
+
+    confirmDeleteButton.addEventListener(
+        "click",
+        async function () {
+
+            if (deletingStudentId === null) {
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/students/${deletingStudentId}`,
+                        {
+                            method: "DELETE"
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (
+                    !response.ok ||
+                    !result.success
+                ) {
+
+                    throw new Error(
+                        result.message ||
+                        "Failed to delete student."
+                    );
+                }
+
+
+                // Remove student from local array
+                students =
+                    students.filter(
+                        student =>
+                            student.id !== deletingStudentId
+                    );
+
+
+                // Close modal
+                closeDeleteModal();
+
+
+                // Refresh dashboard and table
+                refreshUI();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Error deleting student:",
+                    error
+                );
+
+
+                alert(
+                    `Unable to delete student.\n\n${error.message}`
+                );
+            }
+        }
+    );
+}
+
+
+// ========================================
+// Close Delete Modal
+// ========================================
+
+function closeDeleteModal() {
+
+    const deleteModal =
+        document.querySelector(
+            "#deleteModal"
+        );
+
+
+    if (deleteModal) {
+
+        deleteModal.classList.remove(
+            "active"
+        );
+    }
+
+
+    deletingStudentId = null;
+}
+
+
+// ========================================
+// Delete Modal Close Button
+// ========================================
+
+const closeDeleteButton =
+    document.querySelector(
+        "#closeDeleteModal"
+    );
+
+
+if (closeDeleteButton) {
+
+    closeDeleteButton.addEventListener(
+        "click",
+        closeDeleteModal
+    );
+}
+
+
+// ========================================
+// Delete Modal Cancel Button
+// ========================================
+
+const cancelDeleteButton =
+    document.querySelector(
+        "#cancelDelete"
+    );
+
+
+if (cancelDeleteButton) {
+
+    cancelDeleteButton.addEventListener(
+        "click",
+        closeDeleteModal
+    );
+}
 
 // ========================================
 // Edit Student
@@ -688,31 +945,54 @@ async function deleteStudent(studentId) {
 
 let editingStudentId = null;
 
+
 function editStudent(studentId) {
 
-    const student = students.find(
-        student => student.id === studentId
-    );
+    const student =
+        students.find(
+            student =>
+                student.id === studentId
+        );
+
 
     if (!student) {
         return;
     }
 
-    editingStudentId = studentId;
 
-    document.querySelector("#editStudentName").value =
+    editingStudentId =
+        studentId;
+
+
+    document.querySelector(
+        "#editStudentName"
+    ).value =
         student.name;
 
-    document.querySelector("#editAttendance").value =
+
+    document.querySelector(
+        "#editAttendance"
+    ).value =
         student.attendance;
 
-    document.querySelector("#editAverageMarks").value =
+
+    document.querySelector(
+        "#editAverageMarks"
+    ).value =
         student.averageMarks;
 
-    document.querySelector("#editModal").classList.add("active");
+
+    document.querySelector(
+        "#editModal"
+    ).classList.add("active");
 }
+
+
 const editStudentForm =
-    document.querySelector("#editStudentForm");
+    document.querySelector(
+        "#editStudentForm"
+    );
+
 
 if (editStudentForm) {
 
@@ -722,241 +1002,294 @@ if (editStudentForm) {
 
             event.preventDefault();
 
+
             const name =
                 document
-                    .querySelector("#editStudentName")
+                    .querySelector(
+                        "#editStudentName"
+                    )
                     .value
                     .trim();
 
+
             const attendance =
                 Number(
-                    document
-                        .querySelector("#editAttendance")
-                        .value
+                    document.querySelector(
+                        "#editAttendance"
+                    ).value
                 );
+
 
             const averageMarks =
                 Number(
-                    document
-                        .querySelector("#editAverageMarks")
-                        .value
+                    document.querySelector(
+                        "#editAverageMarks"
+                    ).value
                 );
+
+
+            if (!name) {
+
+                alert(
+                    "Please enter the student's name."
+                );
+
+                return;
+            }
+
+
+            if (
+                Number.isNaN(attendance) ||
+                attendance < 0 ||
+                attendance > 100
+            ) {
+
+                alert(
+                    "Attendance must be between 0 and 100."
+                );
+
+                return;
+            }
+
+
+            if (
+                Number.isNaN(averageMarks) ||
+                averageMarks < 0 ||
+                averageMarks > 100
+            ) {
+
+                alert(
+                    "Average marks must be between 0 and 100."
+                );
+
+                return;
+            }
+
 
             try {
 
-    const response = await fetch(
-        `/api/students/${editingStudentId}`,
-        {
-            method: "PUT",
+                const response =
+                    await fetch(
+                        `/api/students/${editingStudentId}`,
+                        {
+                            method: "PUT",
 
-            headers: {
-                "Content-Type": "application/json"
-            },
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
 
-            body: JSON.stringify({
-                name: name,
-                attendance: attendance,
-                averageMarks: averageMarks
-            })
+                            body: JSON.stringify({
+                                name: name,
+                                attendance: attendance,
+                                averageMarks: averageMarks
+                            })
+                        }
+                    );
+
+
+                const result =
+                    await response.json();
+
+
+                if (
+                    !response.ok ||
+                    !result.success
+                ) {
+
+                    throw new Error(
+                        result.message ||
+                        "Failed to update student."
+                    );
+                }
+
+
+                students =
+                    students.map(
+                        student =>
+                            student.id === editingStudentId
+                                ? result.student
+                                : student
+                    );
+
+
+                closeEditModal();
+
+
+                refreshUI();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Error updating student:",
+                    error
+                );
+
+
+                alert(
+                    `Unable to update student.\n\n${error.message}`
+                );
+            }
         }
     );
+}
 
-    const result = await response.json();
 
-    if (!response.ok || !result.success) {
-        throw new Error(
-            result.message || "Failed to update student."
+// ========================================
+// Close Edit Modal
+// ========================================
+
+function closeEditModal() {
+
+    const editModal =
+        document.querySelector(
+            "#editModal"
+        );
+
+
+    const editStudentForm =
+        document.querySelector(
+            "#editStudentForm"
+        );
+
+
+    if (editModal) {
+
+        editModal.classList.remove(
+            "active"
         );
     }
 
-    students = students.map(
-        student =>
-            student.id === editingStudentId
-                ? result.student
-                : student
-    );
-
-    editStudentForm.reset();
-
-    document
-        .querySelector("#editModal")
-        .classList.remove("active");
-
-    editingStudentId = null;
-
-    refreshUI();
-
-} catch (error) {
-
-    console.error(
-        "Error updating student:",
-        error
-    );
-
-    alert(
-        `Unable to update student.\n\n${error.message}`
-    );
-}
-        }
-    );
-}
-function closeEditModal() {
-
-    const editModal =
-        document.querySelector("#editModal");
-
-    const editStudentForm =
-        document.querySelector("#editStudentForm");
-
-    if (editModal) {
-        editModal.classList.remove("active");
-    }
 
     if (editStudentForm) {
+
         editStudentForm.reset();
     }
 
+
     editingStudentId = null;
 }
-const closeEditButton =
-    document.querySelector("#closeEditModal");
 
-const cancelEditButton =
-    document.querySelector("#cancelEdit");
+
+// Close button
+
+const closeEditButton =
+    document.querySelector(
+        "#closeEditModal"
+    );
+
 
 if (closeEditButton) {
+
     closeEditButton.addEventListener(
         "click",
         closeEditModal
     );
 }
 
-if (cancelEditButton) {
-    cancelEditButton.addEventListener(
-        "click",
-        closeEditModal
-    );
-}
-function closeEditModal() {
 
-    const editModal =
-        document.querySelector("#editModal");
-
-    const editStudentForm =
-        document.querySelector("#editStudentForm");
-
-    if (editModal) {
-        editModal.classList.remove("active");
-    }
-
-    if (editStudentForm) {
-        editStudentForm.reset();
-    }
-
-    editingStudentId = null;
-}
-const closeEditButton =
-    document.querySelector("#closeEditModal");
+// Cancel button
 
 const cancelEditButton =
-    document.querySelector("#cancelEdit");
-
-if (closeEditButton) {
-    closeEditButton.addEventListener(
-        "click",
-        closeEditModal
+    document.querySelector(
+        "#cancelEdit"
     );
-}
+
 
 if (cancelEditButton) {
+
     cancelEditButton.addEventListener(
         "click",
         closeEditModal
     );
 }
+
+
 // ========================================
 // View Student
 // ========================================
 
 function viewStudent(studentId) {
-    const student = students.find(
-        student => student.id === studentId
-    );
+
+    const student =
+        students.find(
+            student =>
+                student.id === studentId
+        );
+
 
     if (!student) {
         return;
     }
 
-    const riskLevel =
-        getRiskLevel(student);
 
-    const riskReason =
-        getRiskReason(student);
-
-    const overallPerformance =
+    // Overall performance
+    const overall =
         getOverallPerformance(student);
 
-    const details =
-        document.querySelector(
-            "#studentDetails"
-        );
 
-    if (!details) {
-        return;
-    }
+    // Risk level
+    const risk =
+        getRiskLevel(student);
 
-    let message;
 
-    if (riskLevel === "High") {
-        message =
-            "This student may need immediate academic support. Consider reviewing attendance and recent assessments.";
-    } else if (riskLevel === "Medium") {
-        message =
-            "This student shows some warning signs. Regular monitoring and additional support may be helpful.";
-    } else {
-        message =
-            "This student is currently performing within the expected range.";
-    }
+    // Student name
+    document.querySelector(
+        "#detailStudentName"
+    ).textContent =
+        student.name;
 
-    details.innerHTML = `
-        <h3>${student.name}</h3>
 
-        <div class="detail-item">
-            <strong>Attendance:</strong>
-            ${student.attendance}%
-        </div>
+    // Attendance
+    document.querySelector(
+        "#detailAttendance"
+    ).textContent =
+        `${student.attendance}%`;
 
-        <div class="detail-item">
-            <strong>Average Marks:</strong>
-            ${student.averageMarks}%
-        </div>
 
-        <div class="detail-item">
-            <strong>Overall Performance:</strong>
-            ${overallPerformance.toFixed(1)}%
-        </div>
+    // Average marks
+    document.querySelector(
+        "#detailMarks"
+    ).textContent =
+        `${student.averageMarks}%`;
 
-        <div class="detail-item">
-            <strong>Risk Level:</strong>
-            ${riskLevel}
-        </div>
 
-        <div class="detail-item">
-            <strong>Risk Reason:</strong>
-            ${riskReason}
-        </div>
+    // Overall performance
+    document.querySelector(
+        "#detailOverall"
+    ).textContent =
+        `${overall.toFixed(1)}%`;
 
-        <div class="risk-message">
-            ${message}
-        </div>
 
-        <div class="recommendation">
-            <strong>Recommended Action:</strong>
-            ${getRecommendation(student)}
-        </div>
-    `;
+    // Risk level
+    document.querySelector(
+        "#detailRisk"
+    ).textContent =
+        risk;
 
-    details.classList.add("active");
+
+    // Risk reason
+    document.querySelector(
+        "#detailRiskReason"
+    ).textContent =
+        getRiskReason(student);
+
+
+    // Recommendation
+    document.querySelector(
+        "#detailRecommendation"
+    ).textContent =
+        getRecommendation(student);
+
+
+    // Show student details
+    document.querySelector(
+        "#studentDetails"
+    ).scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
 }
 
 
@@ -969,7 +1302,9 @@ const studentSearch =
         "#studentSearch"
     );
 
+
 if (studentSearch) {
+
     studentSearch.addEventListener(
         "input",
         renderStudents
@@ -986,7 +1321,9 @@ const riskFilter =
         "#riskFilter"
     );
 
+
 if (riskFilter) {
+
     riskFilter.addEventListener(
         "change",
         renderStudents

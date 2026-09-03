@@ -435,10 +435,55 @@
 
             <!-- Student Details -->
 
-            <div
-                id="studentDetails"
-                class="student-details"
-            ></div>
+<div id="studentDetails" class="student-details">
+
+    <div class="student-profile-header">
+        <div>
+            <p class="student-profile-label">STUDENT PROFILE</p>
+            <h3 id="detailStudentName">Student Name</h3>
+        </div>
+
+        <span id="detailRisk" class="risk-badge">
+            Low
+        </span>
+    </div>
+
+    <div class="student-profile-stats">
+
+        <div class="profile-stat">
+            <span>Attendance</span>
+            <strong id="detailAttendance">0%</strong>
+        </div>
+
+        <div class="profile-stat">
+            <span>Average Marks</span>
+            <strong id="detailMarks">0%</strong>
+        </div>
+
+        <div class="profile-stat">
+            <span>Overall Performance</span>
+            <strong id="detailOverall">0%</strong>
+        </div>
+
+    </div>
+
+    <div class="student-profile-info">
+
+        <div>
+            <span>Risk Reason</span>
+            <p id="detailRiskReason">No risk information available.</p>
+        </div>
+
+        <div>
+            <span>Recommended Action</span>
+            <p id="detailRecommendation">
+                No recommendation available.
+            </p>
+        </div>
+
+    </div>
+
+</div>
             <!-- Edit Student Modal -->
 
 <div id="editModal" class="edit-modal">
@@ -504,6 +549,50 @@
             </div>
 
         </form>
+
+    </div>
+
+</div>
+<!-- Delete Student Modal -->
+<div id="deleteModal" class="edit-modal">
+
+    <div class="edit-modal-content">
+
+        <div class="edit-modal-header">
+            <h3>Delete Student</h3>
+
+            <button
+                type="button"
+                id="closeDeleteModal"
+                class="close-modal-btn"
+            >
+                &times;
+            </button>
+        </div>
+
+        <p id="deleteMessage">
+            Are you sure you want to delete this student?
+        </p>
+
+        <div class="edit-modal-actions">
+
+            <button
+                type="button"
+                id="cancelDelete"
+                class="btn secondary-btn"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                id="confirmDelete"
+                class="btn primary-btn"
+            >
+                Delete Student
+            </button>
+
+        </div>
 
     </div>
 
