@@ -57,6 +57,7 @@ def validate_student_data(data):
 def init_db():
     conn = get_db_connection()
 
+
     conn.execute("""
         CREATE TABLE IF NOT EXISTS students (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -66,9 +67,18 @@ def init_db():
         )
     """)
 
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS attendance (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_id INTEGER NOT NULL,
+            date TEXT NOT NULL,
+            status TEXT NOT NULL,
+            FOREIGN KEY (student_id) REFERENCES students(id)
+        )
+    """)
+
     conn.commit()
     conn.close()
-
 
 def seed_students():
     conn = get_db_connection()
@@ -172,8 +182,78 @@ def add_student():
         "message": "Student added successfully",
         "student": dict(new_student)
     }), 201
+@app.route("/api/attendance", methods=["POST"])
+def add_attendance():
+    data = request.get_json()
+
+    student_id = data.get("student_id")
+    date = data.get("date")
+    status = data.get("status")
+
+    if not student_id or not date or not status:
+        return jsonify({
+            "success": False,
+            "message": "student_id, date and status are required."
+        }), 400
+
+    conn = get_db_connection()
+
+    conn.execute("""
+        INSERT INTO attendance (student_id, date, status)
+        VALUES (?, ?, ?)
+    """, (student_id, date, status))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({
+        "success": True,
+        "message": "Attendance added successfully."
+    }), 201
+# ========================================
+# Get Student Attendance
+# ========================================
+
+@app.route("/api/attendance/<int:student_id>", methods=["GET"])
+def get_attendance(student_id):
+
+    conn = get_db_connection()
+
+    # Check if student exists
+    student = conn.execute("""
+        SELECT id, name
+        FROM students
+        WHERE id = ?
+    """, (student_id,)).fetchone()
+
+    if not student:
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "message": "Student not found"
+        }), 404
 
 
+    # Get attendance records
+    attendance_records = conn.execute("""
+        SELECT id, student_id, date, status
+        FROM attendance
+        WHERE student_id = ?
+        ORDER BY date DESC
+    """, (student_id,)).fetchall()
+
+    conn.close()
+
+
+    return jsonify({
+        "success": True,
+        "student": dict(student),
+        "attendance": [
+            dict(record)
+            for record in attendance_records
+        ]
+    })
 # ========================================
 # Update Student
 # ========================================

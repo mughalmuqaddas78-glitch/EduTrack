@@ -431,7 +431,116 @@
                 </table>
 
             </div>
+        <!-- ========================================
+     ATTENDANCE MANAGEMENT
+========================================= -->
 
+<div class="attendance-card">
+
+    <div class="section-heading">
+
+        <p>
+            ATTENDANCE MANAGEMENT
+        </p>
+
+        <h2>
+            Mark Student Attendance
+        </h2>
+
+    </div>
+
+
+    <form id="attendanceForm" class="attendance-form">
+
+        <!-- Student -->
+
+        <div class="form-group">
+
+            <label for="attendanceStudent">
+                Student
+            </label>
+
+            <select
+                id="attendanceStudent"
+                required
+            >
+
+                <option value="">
+                    Select Student
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Date -->
+
+        <div class="form-group">
+
+            <label for="attendanceDate">
+                Date
+            </label>
+
+            <input
+                type="date"
+                id="attendanceDate"
+                required
+            >
+
+        </div>
+
+
+        <!-- Status -->
+
+        <div class="form-group">
+
+            <label for="attendanceStatus">
+                Attendance Status
+            </label>
+
+            <select
+                id="attendanceStatus"
+                required
+            >
+
+                <option value="">
+                    Select Status
+                </option>
+
+                <option value="Present">
+                    Present
+                </option>
+
+                <option value="Absent">
+                    Absent
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Submit -->
+
+        <div class="form-group attendance-submit">
+
+            <label>
+                &nbsp;
+            </label>
+
+            <button
+                type="submit"
+                class="btn primary-btn"
+            >
+                Save Attendance
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
 
             <!-- Student Details -->
 
@@ -468,7 +577,76 @@
     </div>
 
     <div class="student-profile-info">
+<!-- ========================================
+     ATTENDANCE HISTORY
+========================================= -->
 
+<div class="attendance-history-card">
+
+    <div class="section-heading">
+
+        <p>
+            ATTENDANCE HISTORY
+        </p>
+
+        <h2>
+            Student Attendance Records
+        </h2>
+
+    </div>
+
+
+    <div class="attendance-history-header">
+
+        <div class="form-group">
+
+            <label for="historyStudent">
+                Student
+            </label>
+
+            <select id="historyStudent">
+
+                <option value="">
+                    Select Student
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div class="attendance-history-table">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="attendanceHistoryBody">
+
+                <tr>
+
+                    <td colspan="2">
+                        Select a student to view attendance.
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
         <div>
             <span>Risk Reason</span>
             <p id="detailRiskReason">No risk information available.</p>

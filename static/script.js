@@ -1,6 +1,90 @@
 let students = [];
 
+// ========================================
+// Attendance Form
+// ========================================
 
+const attendanceForm =
+    document.querySelector(
+        "#attendanceForm"
+    );
+
+
+if (attendanceForm) {
+
+    attendanceForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            const studentId =
+                document.querySelector(
+                    "#attendanceStudent"
+                ).value;
+
+
+            const date =
+                document.querySelector(
+                    "#attendanceDate"
+                ).value;
+
+
+            const status =
+                document.querySelector(
+                    "#attendanceStatus"
+                ).value;
+
+
+            // Validation
+
+            if (!studentId) {
+
+                alert(
+                    "Please select a student."
+                );
+
+                return;
+            }
+
+
+            if (!date) {
+
+                alert(
+                    "Please select a date."
+                );
+
+                return;
+            }
+
+
+            if (!status) {
+
+                alert(
+                    "Please select attendance status."
+                );
+
+                return;
+            }
+
+
+            // Save attendance
+
+            await addAttendance(
+                Number(studentId),
+                date,
+                status
+            );
+
+
+            // Reset form
+
+            attendanceForm.reset();
+
+        }
+    );
+}
 // ========================================
 // Load Students
 // ========================================
@@ -15,7 +99,10 @@ async function loadStudents() {
 
         students = await response.json();
 
-        refreshUI();
+populateAttendanceStudents();
+populateAttendanceHistoryStudents();
+
+refreshUI();
 
     } catch (error) {
         console.error("Error loading students:", error);
@@ -25,8 +112,192 @@ async function loadStudents() {
         );
     }
 }
+// ========================================
+// Populate Attendance Students
+// ========================================
+
+function populateAttendanceStudents() {
+
+    const attendanceStudent =
+        document.querySelector(
+            "#attendanceStudent"
+        );
+
+    if (!attendanceStudent) {
+        return;
+    }
+
+    attendanceStudent.innerHTML = `
+        <option value="">
+            Select Student
+        </option>
+    `;
+
+    students.forEach(student => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = student.id;
+
+        option.textContent =
+            student.name;
+
+        attendanceStudent.appendChild(option);
+    });
+}
+// ========================================
+// Populate Attendance History Students
+// ========================================
+
+function populateAttendanceHistoryStudents() {
+
+    const historyStudent =
+        document.querySelector("#historyStudent");
+
+    if (!historyStudent) {
+        return;
+    }
+
+    historyStudent.innerHTML = `
+        <option value="">
+            Select Student
+        </option>
+    `;
+
+    students.forEach(student => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = student.id;
+
+        option.textContent = student.name;
+
+        historyStudent.appendChild(option);
+    });
+}
+// ========================================
+// Load Attendance History
+// ========================================
+
+async function loadAttendanceHistory(studentId) {
+
+    const historyBody =
+        document.querySelector("#attendanceHistoryBody");
+
+    if (!historyBody) {
+        return;
+    }
+
+    if (!studentId) {
+
+        historyBody.innerHTML = `
+            <tr>
+                <td colspan="2">
+                    Select a student to view attendance.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/attendance/${studentId}`
+            );
+
+        const result =
+            await response.json();
+
+        if (!response.ok || !result.success) {
+
+            throw new Error(
+                result.message ||
+                "Failed to load attendance."
+            );
+        }
+
+        if (result.attendance.length === 0) {
+
+            historyBody.innerHTML = `
+                <tr>
+                    <td colspan="2">
+                        No attendance records found.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        historyBody.innerHTML =
+            result.attendance.map(record => {
+
+                const statusClass =
+                    record.status === "Present"
+                        ? "attendance-status-present"
+                        : "attendance-status-absent";
+
+                return `
+                    <tr>
+
+                        <td>
+                            ${record.date}
+                        </td>
+
+                        <td>
+                            <span class="${statusClass}">
+                                ${record.status}
+                            </span>
+                        </td>
+
+                    </tr>
+                `;
+
+            }).join("");
+
+    } catch (error) {
+
+        console.error(
+            "Error loading attendance:",
+            error
+        );
+
+        historyBody.innerHTML = `
+            <tr>
+                <td colspan="2">
+                    Unable to load attendance records.
+                </td>
+            </tr>
+        `;
+    }
+}// ========================================
+// Attendance History Student Selection
+// ========================================
+
+const historyStudent =
+    document.querySelector("#historyStudent");
 
 
+if (historyStudent) {
+
+    historyStudent.addEventListener(
+        "change",
+        function () {
+
+            const studentId =
+                this.value;
+
+            loadAttendanceHistory(
+                studentId
+            );
+        }
+    );
+}
 // ========================================
 // Calculate Risk Level
 // ========================================
@@ -1329,8 +1600,104 @@ if (riskFilter) {
         renderStudents
     );
 }
+// ========================================
+// Toast Notification
+// ========================================
+
+function showToast(message, type = "success") {
+
+    const toast =
+        document.createElement("div");
+
+    toast.className =
+        `toast-notification ${type}`;
+
+    toast.textContent =
+        message;
+
+    document.body.appendChild(toast);
 
 
+    setTimeout(() => {
+
+        toast.classList.add("show");
+
+    }, 10);
+
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+
+    }, 3000);
+}
+// ========================================
+// Add Attendance
+// ========================================
+
+async function addAttendance(studentId, date, status) {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/attendance",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        student_id: studentId,
+                        date: date,
+                        status: status
+                    })
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !result.success
+        ) {
+
+            throw new Error(
+                result.message ||
+                "Failed to add attendance."
+            );
+        }
+
+
+        showToast(
+    "Attendance saved successfully.",
+    "success"
+);
+
+
+    } catch (error) {
+
+        console.error(
+            "Error adding attendance:",
+            error
+        );
+
+
+        alert(
+            `Unable to save attendance.\n\n${error.message}`
+        );
+    }
+}
 // ========================================
 // Initial Load
 // ========================================
