@@ -67,6 +67,7 @@ def init_db():
         )
     """)
 
+
     conn.execute("""
         CREATE TABLE IF NOT EXISTS attendance (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -76,6 +77,16 @@ def init_db():
             FOREIGN KEY (student_id) REFERENCES students(id)
         )
     """)
+
+
+    # Prevent duplicate attendance
+    # for the same student on the same date
+    conn.execute("""
+        CREATE UNIQUE INDEX IF NOT EXISTS
+        idx_attendance_student_date
+        ON attendance (student_id, date)
+    """)
+
 
     conn.commit()
     conn.close()
@@ -142,73 +153,83 @@ def get_students():
 # Add Student
 # ========================================
 
-@app.route("/api/students", methods=["POST"])
-def add_student():
-    data = request.get_json()
-
-    student_data, error = validate_student_data(data)
-
-    if error:
-        return jsonify({
-            "success": False,
-            "message": error
-        }), 400
-
-    conn = get_db_connection()
-
-    cursor = conn.execute("""
-        INSERT INTO students (name, attendance, averageMarks)
-        VALUES (?, ?, ?)
-    """, (
-        student_data["name"],
-        student_data["attendance"],
-        student_data["averageMarks"]
-    ))
-
-    student_id = cursor.lastrowid
-
-    conn.commit()
-
-    new_student = conn.execute("""
-        SELECT id, name, attendance, averageMarks
-        FROM students
-        WHERE id = ?
-    """, (student_id,)).fetchone()
-
-    conn.close()
-
-    return jsonify({
-        "success": True,
-        "message": "Student added successfully",
-        "student": dict(new_student)
-    }), 201
 @app.route("/api/attendance", methods=["POST"])
 def add_attendance():
+
     data = request.get_json()
+
+    if not data:
+        return jsonify({
+            "success": False,
+            "message": "No data received."
+        }), 400
+
 
     student_id = data.get("student_id")
     date = data.get("date")
     status = data.get("status")
 
+
+    # Validate required fields
     if not student_id or not date or not status:
         return jsonify({
             "success": False,
             "message": "student_id, date and status are required."
         }), 400
 
+
     conn = get_db_connection()
 
+
+    # Check if student exists
+    student = conn.execute("""
+        SELECT id, name
+        FROM students
+        WHERE id = ?
+    """, (student_id,)).fetchone()
+
+
+    if not student:
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "message": "Student not found."
+        }), 404
+
+
+    # Check for duplicate attendance
+    existing_attendance = conn.execute("""
+        SELECT id
+        FROM attendance
+        WHERE student_id = ?
+        AND date = ?
+    """, (student_id, date)).fetchone()
+
+
+    if existing_attendance:
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "message": "Attendance already marked for this date."
+        }), 409
+
+
+    # Save attendance
     conn.execute("""
         INSERT INTO attendance (student_id, date, status)
         VALUES (?, ?, ?)
     """, (student_id, date, status))
 
+
     conn.commit()
     conn.close()
 
+
     return jsonify({
         "success": True,
-        "message": "Attendance added successfully."
+        "message": "Attendance saved successfully."
     }), 201
 # ========================================
 # Get Student Attendance
@@ -253,6 +274,75 @@ def get_attendance(student_id):
             dict(record)
             for record in attendance_records
         ]
+    })
+# ========================================
+# Get Attendance Percentage
+# ========================================
+
+@app.route("/api/attendance/<int:student_id>/percentage", methods=["GET"])
+def get_attendance_percentage(student_id):
+
+    conn = get_db_connection()
+
+    # Check if student exists
+    student = conn.execute("""
+        SELECT id, name
+        FROM students
+        WHERE id = ?
+    """, (student_id,)).fetchone()
+
+    if not student:
+        conn.close()
+
+        return jsonify({
+            "success": False,
+            "message": "Student not found"
+        }), 404
+
+
+    # Get attendance statistics
+    stats = conn.execute("""
+        SELECT
+            COUNT(*) AS total_days,
+            SUM(
+                CASE
+                    WHEN status = 'Present' THEN 1
+                    ELSE 0
+                END
+            ) AS present_days
+        FROM attendance
+        WHERE student_id = ?
+    """, (student_id,)).fetchone()
+
+
+    conn.close()
+
+
+    total_days = stats["total_days"]
+    present_days = stats["present_days"] or 0
+
+
+    # No attendance records yet
+    if total_days == 0:
+
+        percentage = 0
+
+    else:
+
+        percentage = (
+            present_days / total_days
+        ) * 100
+
+
+    return jsonify({
+        "success": True,
+        "student": dict(student),
+        "total_days": total_days,
+        "present_days": present_days,
+        "attendance_percentage": round(
+            percentage,
+            2
+        )
     })
 # ========================================
 # Update Student

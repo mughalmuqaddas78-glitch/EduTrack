@@ -41,42 +41,52 @@ if (attendanceForm) {
 
             if (!studentId) {
 
-                alert(
-                    "Please select a student."
-                );
+    showToast(
+        "Please select a student.",
+        "error"
+    );
 
-                return;
-            }
-
-
-            if (!date) {
-
-                alert(
-                    "Please select a date."
-                );
-
-                return;
-            }
+    return;
+}
 
 
-            if (!status) {
+if (!date) {
 
-                alert(
-                    "Please select attendance status."
-                );
+    showToast(
+        "Please select a date.",
+        "error"
+    );
 
-                return;
-            }
+    return;
+}
 
 
+if (!status) {
+
+    showToast(
+        "Please select attendance status.",
+        "error"
+    );
+
+    return;
+}
             // Save attendance
 
-            await addAttendance(
-                Number(studentId),
-                date,
-                status
-            );
+           const saved =
+    await addAttendance(
+        Number(studentId),
+        date,
+        status
+    );
 
+
+if (saved) {
+
+    attendanceForm.reset();
+
+    // Refresh students, attendance %, dashboard & risk
+    await loadStudents();
+}
 
             // Reset form
 
@@ -90,22 +100,97 @@ if (attendanceForm) {
 // ========================================
 
 async function loadStudents() {
+
     try {
-        const response = await fetch("/api/students");
+
+        const response =
+            await fetch("/api/students");
+
 
         if (!response.ok) {
-            throw new Error("Failed to load students.");
+
+            throw new Error(
+                "Failed to load students."
+            );
         }
 
-        students = await response.json();
 
-populateAttendanceStudents();
-populateAttendanceHistoryStudents();
+        students =
+            await response.json();
 
-refreshUI();
+
+        // ========================================
+        // Load Actual Attendance Percentage
+        // ========================================
+
+        await Promise.all(
+
+            students.map(
+                async function (student) {
+
+                    try {
+
+                        const attendanceResponse =
+                            await fetch(
+                                `/api/attendance/${student.id}/percentage`
+                            );
+
+
+                        if (
+                            !attendanceResponse.ok
+                        ) {
+
+                            throw new Error(
+                                "Failed to load attendance."
+                            );
+                        }
+
+
+                        const attendanceResult =
+                            await attendanceResponse.json();
+
+
+                        if (
+                            attendanceResult.success
+                        ) {
+
+                            student.attendance =
+                                attendanceResult.attendance_percentage;
+                        }
+
+                    } catch (error) {
+
+                        console.error(
+                            `Error loading attendance for ${student.name}:`,
+                            error
+                        );
+
+                    }
+
+                }
+            )
+
+        );
+
+
+        // ========================================
+        // Refresh UI
+        // ========================================
+
+        populateAttendanceStudents();
+
+        populateAttendanceHistoryStudents();
+
+        refreshUI();
+
 
     } catch (error) {
-        console.error("Error loading students:", error);
+
+        console.error(
+            "Error loading students:",
+            error
+        );
+
 
         alert(
             `Unable to load students.\n\n${error.message}`
@@ -1481,7 +1566,11 @@ if (cancelEditButton) {
 // View Student
 // ========================================
 
-function viewStudent(studentId) {
+// ========================================
+// View Student
+// ========================================
+
+async function viewStudent(studentId) {
 
     const student =
         students.find(
@@ -1495,14 +1584,63 @@ function viewStudent(studentId) {
     }
 
 
+    // ========================================
+    // Get Actual Attendance Percentage
+    // ========================================
+
+    let attendance =
+        student.attendance;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/attendance/${studentId}/percentage`
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (response.ok && result.success) {
+
+            attendance =
+                result.attendance_percentage;
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Error loading attendance percentage:",
+            error
+        );
+    }
+
+
+    // ========================================
+    // Create Student Data for Display
+    // ========================================
+
+    const studentForDisplay = {
+        ...student,
+        attendance: attendance
+    };
+
+
     // Overall performance
     const overall =
-        getOverallPerformance(student);
+        getOverallPerformance(
+            studentForDisplay
+        );
 
 
     // Risk level
     const risk =
-        getRiskLevel(student);
+        getRiskLevel(
+            studentForDisplay
+        );
 
 
     // Student name
@@ -1516,7 +1654,7 @@ function viewStudent(studentId) {
     document.querySelector(
         "#detailAttendance"
     ).textContent =
-        `${student.attendance}%`;
+        `${attendance}%`;
 
 
     // Average marks
@@ -1544,14 +1682,18 @@ function viewStudent(studentId) {
     document.querySelector(
         "#detailRiskReason"
     ).textContent =
-        getRiskReason(student);
+        getRiskReason(
+            studentForDisplay
+        );
 
 
     // Recommendation
     document.querySelector(
         "#detailRecommendation"
     ).textContent =
-        getRecommendation(student);
+        getRecommendation(
+            studentForDisplay
+        );
 
 
     // Show student details
@@ -1562,7 +1704,6 @@ function viewStudent(studentId) {
         block: "start"
     });
 }
-
 
 // ========================================
 // Search Students
@@ -1639,6 +1780,10 @@ function showToast(message, type = "success") {
 // Add Attendance
 // ========================================
 
+// ========================================
+// Add Attendance
+// ========================================
+
 async function addAttendance(studentId, date, status) {
 
     try {
@@ -1650,8 +1795,7 @@ async function addAttendance(studentId, date, status) {
                     method: "POST",
 
                     headers: {
-                        "Content-Type":
-                            "application/json"
+                        "Content-Type": "application/json"
                     },
 
                     body: JSON.stringify({
@@ -1667,22 +1811,24 @@ async function addAttendance(studentId, date, status) {
             await response.json();
 
 
-        if (
-            !response.ok ||
-            !result.success
-        ) {
+        if (!response.ok || !result.success) {
 
-            throw new Error(
+            showToast(
                 result.message ||
-                "Failed to add attendance."
+                "Failed to save attendance.",
+                "error"
             );
+
+            return false;
         }
 
 
         showToast(
-    "Attendance saved successfully.",
-    "success"
-);
+            "Attendance saved successfully.",
+            "success"
+        );
+
+        return true;
 
 
     } catch (error) {
@@ -1693,9 +1839,12 @@ async function addAttendance(studentId, date, status) {
         );
 
 
-        alert(
-            `Unable to save attendance.\n\n${error.message}`
+        showToast(
+            "Unable to save attendance. Please try again.",
+            "error"
         );
+
+        return false;
     }
 }
 // ========================================
